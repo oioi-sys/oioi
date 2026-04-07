@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DOF Group ASA — Stock Tracker</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <span class="logo">DOF GROUP ASA</span>
+      <span class="exchange-badge">Oslo Stock Exchange &bull; DOF.OL</span>
+    </div>
+    <div class="header-right">
+      <span id="market-state-badge" class="market-badge">--</span>
+      <span id="clock" class="clock">--:--:--</span>
+    </div>
+  </header>
+
+  <!-- Error banner -->
+  <div id="error-banner" class="error-banner hidden">
+    Unable to refresh data &mdash; retrying&hellip;
+  </div>
+
+  <main class="main-grid">
+    <!-- Left column: price + chart -->
+    <section class="col-left">
+      <!-- Price hero -->
+      <div class="card price-card">
+        <div class="price-top">
+          <div class="price-block">
+            <div class="price-label">Current Price</div>
+            <div class="price-value">
+              <span id="price">--</span>
+              <span id="currency" class="currency">NOK</span>
+            </div>
+            <div id="change-row" class="change-row">
+              <span id="change-arrow" class="arrow">&#9650;</span>
+              <span id="change-abs">--</span>
+              <span id="change-pct" class="change-pct">(--)</span>
+            </div>
+          </div>
+          <div class="price-meta">
+            <div id="live-indicator" class="live-dot" title="Live"></div>
+            <div class="meta-updated">Updated <span id="last-updated">--</span></div>
+          </div>
+        </div>
+        <div class="price-stats">
+          <div class="stat-box">
+            <div class="stat-label">Prev Close</div>
+            <div class="stat-value" id="prev-close">--</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Day High</div>
+            <div class="stat-value" id="day-high">--</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Day Low</div>
+            <div class="stat-value" id="day-low">--</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Volume</div>
+            <div class="stat-value" id="volume">--</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="card chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Price Chart</span>
+          <div class="period-selector">
+            <button class="period-btn active" data-period="1d">1D</button>
+            <button class="period-btn" data-period="5d">5D</button>
+            <button class="period-btn" data-period="1mo">1M</button>
+            <button class="period-btn" data-period="3mo">3M</button>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="price-chart"></canvas>
+        </div>
+      </div>
+
+      <!-- Company info -->
+      <div class="card info-card">
+        <h2 class="card-title" id="company-name">DOF Group ASA</h2>
+        <p class="company-desc" id="company-desc">Loading company information&hellip;</p>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Sector</span>
+            <span class="info-value" id="sector">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Industry</span>
+            <span class="info-value" id="industry">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Employees</span>
+            <span class="info-value" id="employees">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Market Cap</span>
+            <span class="info-value" id="market-cap">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">P/E Ratio</span>
+            <span class="info-value" id="pe-ratio">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Website</span>
+            <span class="info-value"><a id="website" href="#" target="_blank" rel="noopener">--</a></span>
+          </div>
+        </div>
+        <div class="week52-section">
+          <div class="week52-label">52-Week Range</div>
+          <div class="week52-bar-wrap">
+            <span class="week52-lo" id="w52-low">--</span>
+            <div class="week52-bar">
+              <div class="week52-fill" id="w52-fill" style="width:50%"></div>
+              <div class="week52-thumb" id="w52-thumb" style="left:50%"></div>
+            </div>
+            <span class="week52-hi" id="w52-high">--</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right column: news -->
+    <section class="col-right">
+      <div class="card news-card">
+        <h2 class="card-title">Latest News</h2>
+        <div id="news-list" class="news-list">
+          <div class="news-loading">Loading news&hellip;</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    Data provided by Yahoo Finance via yfinance &mdash;
+    For informational purposes only. Not financial advice.
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
