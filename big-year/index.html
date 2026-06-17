@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Big Year — Quarterly check-in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#000000;
+    --ink:#13151f;
+    --ink-soft:#5b6472;
+    --accent:#cfe7ff;
+    --accent-hi:#f1f9ff;
+    --accent-lo:#a3cdec;
+    /* category colours */
+    --c0:#5b6b8c; --c1:#4f7a8b; --c2:#6c5b7b; --c3:#b2702f; --c4:#9c3b3b; --c5:#7d8b99;
+    --shadow:0 24px 60px -20px rgba(0,0,0,.65);
+    --display:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--body);
+    background:var(--canvas);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 16px 80px}
+
+  /* ---------- Masthead ---------- */
+  .mast{margin:8px 4px 22px}
+  .brand{display:flex;flex-direction:column;gap:2px}
+  .kicker{
+    font-family:var(--display);font-weight:800;letter-spacing:.28em;
+    text-transform:uppercase;font-size:11px;color:var(--accent);
+  }
+  .title{
+    font-family:var(--display);font-weight:900;line-height:.92;
+    letter-spacing:-.02em;color:#fff;
+    font-size:clamp(34px,7vw,62px);text-transform:uppercase;
+    display:flex;align-items:baseline;gap:.28em;flex-wrap:wrap;
+  }
+  .title .yr{color:var(--accent)}
+
+  /* ---------- Quarter navigation ---------- */
+  .qnav{display:flex;align-items:center;gap:10px;margin:2px 4px 18px}
+  .qnav button{
+    width:36px;height:36px;border-radius:5px;border:1px solid rgba(255,255,255,.2);
+    background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.03));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.2), inset 0 -1px 1px rgba(0,0,0,.4), 0 3px 7px rgba(0,0,0,.5);
+    color:#fff;font-size:18px;cursor:pointer;
+    display:grid;place-items:center;flex:0 0 auto;
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .qnav button:hover{background:linear-gradient(180deg, rgba(255,255,255,.24), rgba(255,255,255,.05))}
+  .qnav button:active{transform:translateY(1px);box-shadow:inset 0 1px 3px rgba(0,0,0,.5), 0 1px 2px rgba(0,0,0,.4)}
+  .qlabel{display:flex;flex-direction:column;align-items:center;flex:1;line-height:1.25;min-width:0}
+  .qlabel .qname{font-family:var(--display);font-weight:900;font-size:19px;color:#fff;letter-spacing:.02em}
+  .qlabel .qrange{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em}
+  .qnav .qtoday{
+    width:auto;flex:0 0 auto;height:36px;padding:0 14px;border:1px solid rgba(0,10,20,.35);
+    clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px);
+    background:linear-gradient(180deg, var(--accent-hi), var(--accent-lo));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 4px rgba(20,50,75,.25), 0 4px 10px rgba(0,0,0,.5);
+    color:#0c1726;font-weight:700;font-size:12.5px;cursor:pointer;
+    white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;
+    transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+  }
+  .qtoday:hover{filter:brightness(1.05)}
+  .qtoday:active{transform:translateY(1px);box-shadow:inset 0 1px 4px rgba(20,50,75,.4), 0 2px 4px rgba(0,0,0,.4)}
+
+  /* ---------- Quarter cards ---------- */
+  .qsection{margin:0 4px 18px}
+  .qcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:14px 16px;margin-bottom:10px}
+  .qhead{display:flex;align-items:baseline;gap:9px;margin-bottom:4px}
+  .qdot{width:11px;height:11px;border-radius:99px;flex:0 0 auto;margin-top:2px}
+  .qtitle{font-weight:700;font-size:14px;color:#fff}
+  .qcard .sub{font-size:12px;color:rgba(255,255,255,.5);margin:0 0 12px 20px}
+  .qinput{
+    width:100%;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);
+    color:#fff;border-radius:11px;padding:11px 13px;font-size:14px;font-family:inherit;outline:none;
+    transition:border-color .15s;margin-bottom:10px;
+  }
+  .qinput::placeholder{color:rgba(255,255,255,.4)}
+  .qinput:focus{border-color:var(--accent)}
+  .qdone{
+    border:1px solid rgba(255,255,255,.2);
+    background:linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.02));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14), 0 2px 6px rgba(0,0,0,.4);
+    color:rgba(255,255,255,.85);
+    border-radius:4px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, color .12s ease;
+  }
+  .qdone:hover{border-color:var(--accent);color:var(--accent)}
+  .qdone:active{transform:translateY(1px)}
+  .qdone.done{
+    background:linear-gradient(180deg, #5cb681, #2f7a4d);border-color:#2f7a4d;color:#04140a;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 2px 6px rgba(0,0,0,.45);
+  }
+  .advmonth{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px;font-weight:700}
+  .advrow{display:flex;gap:8px;flex-wrap:wrap}
+  .findnearby{
+    border:1px dashed rgba(255,255,255,.35);
+    background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.01));
+    color:#fff;
+    border-radius:4px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;
+    transition:transform .12s ease, border-color .12s ease, color .12s ease;
+  }
+  .findnearby:hover{border-color:var(--accent);color:var(--accent)}
+  .findnearby:active{transform:translateY(1px)}
+
+  /* ---------- Things-to-do link card ---------- */
+  .placeslink{
+    display:flex;align-items:center;gap:12px;text-decoration:none;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;
+    padding:16px 18px;margin:0 4px 18px;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .placeslink .pl-body{flex:1;min-width:0}
+  .placeslink .pl-title{font-weight:700;font-size:15px;color:#fff}
+  .placeslink .pl-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+  .placeslink .pl-arrow{
+    font-size:16px;color:#0c1726;flex:0 0 auto;width:32px;height:32px;border-radius:4px;
+    display:grid;place-items:center;
+    background:linear-gradient(180deg, var(--accent-hi), var(--accent-lo));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.8), 0 3px 7px rgba(0,0,0,.45);
+  }
+  .placeslink:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
+
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:14px;line-height:1.5}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important}
+  }
+  @media(max-width:520px){
+    .wrap{padding:18px 10px 70px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <div class="brand">
+      <div class="kicker">Plan a big year</div>
+      <h1 class="title">My Big <span class="yr" id="titleYear">2026</span></h1>
+    </div>
+  </header>
+
+  <div class="qnav">
+    <button id="prevQ" aria-label="Previous quarter">‹</button>
+    <div class="qlabel"><span class="qname" id="qName">Q1</span><span class="qrange" id="qRange">Jan – Mar 2026</span></div>
+    <button id="nextQ" aria-label="Next quarter">›</button>
+    <button class="qtoday" id="qToday">Today</button>
+  </div>
+
+  <section class="qsection" id="habitSection"></section>
+  <section class="qsection" id="adventureSection"></section>
+  <section class="qsection" id="misogiSection"></section>
+
+  <a class="placeslink" href="places.html">
+    <div class="pl-body">
+      <div class="pl-title">Things to do nearby</div>
+      <div class="pl-sub">Search activities near a city, powered by OpenTripMap</div>
+    </div>
+    <span class="pl-arrow">→</span>
+  </a>
+
+  <a class="placeslink" href="year.html">
+    <div class="pl-body">
+      <div class="pl-title">What you've done this year</div>
+      <div class="pl-sub">See every completed habit, adventure, and misogi</div>
+    </div>
+    <span class="pl-arrow">→</span>
+  </a>
+
+  <p class="hint" style="color:rgba(255,255,255,.4);text-align:center;margin-top:18px">
+    Everything saves automatically
+  </p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Storage layer (persists across sessions; falls back to memory) ----------
+  var mem = {};
+  var hasStore = (typeof window !== "undefined" && window.storage && typeof window.storage.get === "function");
+  async function load(key, fallback){
+    try{
+      if(hasStore){ var r = await window.storage.get(key, false); return r && r.value!=null ? JSON.parse(r.value) : fallback; }
+    }catch(e){ /* key missing or error */ }
+    return (key in mem) ? mem[key] : fallback;
+  }
+  async function save(key, val){
+    mem[key] = val;
+    try{ if(hasStore){ await window.storage.set(key, JSON.stringify(val), false); } }catch(e){}
+  }
+
+  // ---------- Constants ----------
+  var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var CAT_VARS = ["--c0","--c1","--c2","--c3","--c4","--c5"];
+  var QUARTER_MONTHS = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]];
+  var ADV_MONTHS = [1,3,5,7,9,11]; // 6 mini adventures, every other month
+
+  function currentQuarter(){ return Math.ceil((new Date().getMonth()+1)/3); }
+
+  var state = {
+    year: new Date().getFullYear(),
+    viewQuarter: currentQuarter(),
+    adventures: [],    // 6x {month, text, done}
+    habits: [],        // 4x {quarter, text, done}
+    misogi: {text:"", done:false}
+  };
+
+  function catColor(i){ return getComputedStyle(document.documentElement).getPropertyValue(CAT_VARS[i]).trim(); }
+
+  // ---------- Init ----------
+  async function init(){
+    await loadYear();
+    renderAll();
+    wire();
+  }
+  async function loadYear(){
+    state.adventures = await load("bigyear:adventures:"+state.year, ADV_MONTHS.map(function(m){ return {month:m, text:"", done:false}; }));
+    state.habits = await load("bigyear:habits:"+state.year, [1,2,3,4].map(function(q){ return {quarter:q, text:"", done:false}; }));
+    state.misogi = await load("bigyear:misogi:"+state.year, {text:"", done:false});
+  }
+  function persistAdventures(){ save("bigyear:adventures:"+state.year, state.adventures); }
+  function persistHabits(){ save("bigyear:habits:"+state.year, state.habits); }
+  function persistMisogi(){ save("bigyear:misogi:"+state.year, state.misogi); }
+
+  // ---------- Render: everything ----------
+  function renderAll(){
+    document.getElementById("titleYear").textContent = state.year;
+    renderDash();
+  }
+
+  function renderDash(){
+    var q = state.viewQuarter;
+    document.getElementById("qName").textContent = "Q"+q;
+    var qm = QUARTER_MONTHS[q-1];
+    document.getElementById("qRange").textContent = MONTHS[qm[0]-1]+" – "+MONTHS[qm[2]-1]+" "+state.year;
+
+    var habit = state.habits[q-1];
+    document.getElementById("habitSection").innerHTML =
+      '<div class="qcard">'+
+        '<div class="qhead"><span class="qdot" style="background:'+catColor(1)+'"></span><span class="qtitle">This quarter\'s habit</span></div>'+
+        '<div class="sub">One new habit to build this quarter</div>'+
+        '<input type="text" class="qinput" id="habitInput" maxlength="60" placeholder="What habit are you building?" value="'+esc(habit.text)+'" />'+
+        '<button class="qdone'+(habit.done?" done":"")+'" id="habitDone">'+(habit.done?"✓ Done":"Mark as done")+'</button>'+
+      '</div>';
+
+    var due = state.adventures.filter(function(a){ return qm.indexOf(a.month)>=0; });
+    document.getElementById("adventureSection").innerHTML =
+      '<div class="qhead" style="margin:0 4px 4px"><span class="qdot" style="background:'+catColor(5)+'"></span><span class="qtitle">Mini adventure this quarter x2</span></div>'+
+      due.map(function(a){
+        return '<div class="qcard">'+
+          '<div class="advmonth">'+MONTHS[a.month-1]+'</div>'+
+          '<input type="text" class="qinput" data-adv="'+a.month+'" maxlength="60" placeholder="What’s the adventure?" value="'+esc(a.text)+'" />'+
+          '<div class="advrow">'+
+            '<button class="qdone'+(a.done?" done":"")+'" data-adv-done="'+a.month+'">'+(a.done?"✓ Done":"Mark as done")+'</button>'+
+            '<button class="findnearby" data-find="'+a.month+'">Find nearby activities</button>'+
+          '</div>'+
+        '</div>';
+      }).join("");
+
+    document.getElementById("misogiSection").innerHTML =
+      '<div class="qcard">'+
+        '<div class="qhead"><span class="qdot" style="background:'+catColor(4)+'"></span><span class="qtitle">This year’s misogi</span></div>'+
+        '<div class="sub">One hard, defining challenge — no fixed date, just get it done</div>'+
+        '<input type="text" class="qinput" id="misogiInput" maxlength="60" placeholder="Name your misogi…" value="'+esc(state.misogi.text)+'" />'+
+        '<button class="qdone'+(state.misogi.done?" done":"")+'" id="misogiDone">'+(state.misogi.done?"✓ Done":"Mark as done")+'</button>'+
+      '</div>';
+
+    wireDash();
+  }
+
+  function wireDash(){
+    var hi = document.getElementById("habitInput");
+    hi.addEventListener("change", function(){ state.habits[state.viewQuarter-1].text = hi.value.trim(); persistHabits(); });
+    document.getElementById("habitDone").addEventListener("click", function(){
+      var h = state.habits[state.viewQuarter-1]; h.done = !h.done; persistHabits(); renderDash();
+    });
+
+    document.querySelectorAll("[data-adv]").forEach(function(inp){
+      inp.addEventListener("change", function(){
+        var m = parseInt(inp.getAttribute("data-adv"),10);
+        state.adventures.forEach(function(a){ if(a.month===m) a.text = inp.value.trim(); });
+        persistAdventures();
+      });
+    });
+    document.querySelectorAll("[data-adv-done]").forEach(function(b){
+      b.addEventListener("click", function(){
+        var m = parseInt(b.getAttribute("data-adv-done"),10);
+        state.adventures.forEach(function(a){ if(a.month===m) a.done = !a.done; });
+        persistAdventures(); renderDash();
+      });
+    });
+    document.querySelectorAll("[data-find]").forEach(function(b){
+      b.addEventListener("click", function(){ window.location.href = "places.html"; });
+    });
+
+    var mi = document.getElementById("misogiInput");
+    mi.addEventListener("change", function(){ state.misogi.text = mi.value.trim(); persistMisogi(); });
+    document.getElementById("misogiDone").addEventListener("click", function(){
+      state.misogi.done = !state.misogi.done; persistMisogi(); renderDash();
+    });
+  }
+
+  async function shiftQuarter(delta){
+    var q = state.viewQuarter + delta;
+    if(q<1){ q=4; state.year--; await loadYear(); }
+    else if(q>4){ q=1; state.year++; await loadYear(); }
+    state.viewQuarter = q;
+    document.getElementById("titleYear").textContent = state.year;
+    renderDash();
+  }
+  async function jumpToCurrentQuarter(){
+    state.year = new Date().getFullYear();
+    state.viewQuarter = currentQuarter();
+    await loadYear();
+    document.getElementById("titleYear").textContent = state.year;
+    renderDash();
+  }
+
+  // ---------- Wire ----------
+  function wire(){
+    document.getElementById("prevQ").addEventListener("click", function(){ shiftQuarter(-1); });
+    document.getElementById("nextQ").addEventListener("click", function(){ shiftQuarter(1); });
+    document.getElementById("qToday").addEventListener("click", jumpToCurrentQuarter);
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+  init();
+})();
+</script>
+</body>
+</html>

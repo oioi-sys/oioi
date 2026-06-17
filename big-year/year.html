@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Year in review — My Big Year</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#000000;
+    --ink-soft:#5b6472;
+    --accent:#cfe7ff;
+    --c0:#5b6b8c; --c1:#4f7a8b; --c2:#6c5b7b; --c3:#b2702f; --c4:#9c3b3b; --c5:#7d8b99;
+    --display:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--body);
+    background:var(--canvas);
+    color:#13151f;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 16px 80px}
+
+  .back{
+    display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+    color:rgba(255,255,255,.6);font-size:13px;font-weight:600;margin:4px 4px 16px;
+  }
+  .back:hover{color:#fff}
+
+  .mast{margin:0 4px 22px}
+  .kicker{
+    font-family:var(--display);font-weight:800;letter-spacing:.28em;
+    text-transform:uppercase;font-size:11px;color:var(--accent);
+  }
+  .title{
+    font-family:var(--display);font-weight:900;line-height:.92;
+    letter-spacing:-.02em;color:#fff;
+    font-size:clamp(28px,6vw,44px);text-transform:uppercase;margin-top:2px;
+  }
+
+  .rgroup{margin:0 4px 22px}
+  .rhead{display:flex;align-items:baseline;gap:9px;margin-bottom:10px}
+  .rdot{width:11px;height:11px;border-radius:99px;flex:0 0 auto;margin-top:2px}
+  .rtitle{font-weight:700;font-size:14px;color:#fff}
+  .rcard{
+    display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:11px 13px;margin-bottom:8px;
+  }
+  .rcheck{font-size:14px;color:#3f8f5c;flex:0 0 auto;margin-top:1px}
+  .rbody{flex:1;min-width:0}
+  .rname{font-weight:700;font-size:14px;color:#fff}
+  .rmeta{font-size:11.5px;color:rgba(255,255,255,.5);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+
+  .empty{font-size:13px;color:rgba(255,255,255,.45);margin:2px 4px 10px}
+
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:14px;line-height:1.5}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important}
+  }
+  @media(max-width:520px){
+    .wrap{padding:18px 10px 70px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="index.html">← Back to My Big Year</a>
+
+  <header class="mast">
+    <div class="kicker">Plan a big year</div>
+    <h1 class="title">What you've done <span id="titleYear">2026</span></h1>
+  </header>
+
+  <section class="rgroup" id="habitsGroup"></section>
+  <section class="rgroup" id="adventuresGroup"></section>
+  <section class="rgroup" id="misogiGroup"></section>
+
+  <p class="hint" style="color:rgba(255,255,255,.4);text-align:center;margin-top:18px">
+    Mark things done on the dashboard to see them appear here
+  </p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Storage layer (persists across sessions; falls back to memory) ----------
+  var mem = {};
+  var hasStore = (typeof window !== "undefined" && window.storage && typeof window.storage.get === "function");
+  async function load(key, fallback){
+    try{
+      if(hasStore){ var r = await window.storage.get(key, false); return r && r.value!=null ? JSON.parse(r.value) : fallback; }
+    }catch(e){ /* key missing or error */ }
+    return (key in mem) ? mem[key] : fallback;
+  }
+
+  // ---------- Constants ----------
+  var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var CAT_VARS = ["--c0","--c1","--c2","--c3","--c4","--c5"];
+  var ADV_MONTHS = [1,3,5,7,9,11];
+
+  var state = {
+    year: new Date().getFullYear(),
+    adventures: [],
+    habits: [],
+    misogi: {text:"", done:false}
+  };
+
+  function catColor(i){ return getComputedStyle(document.documentElement).getPropertyValue(CAT_VARS[i]).trim(); }
+
+  async function init(){
+    state.adventures = await load("bigyear:adventures:"+state.year, ADV_MONTHS.map(function(m){ return {month:m, text:"", done:false}; }));
+    state.habits = await load("bigyear:habits:"+state.year, [1,2,3,4].map(function(q){ return {quarter:q, text:"", done:false}; }));
+    state.misogi = await load("bigyear:misogi:"+state.year, {text:"", done:false});
+    document.getElementById("titleYear").textContent = state.year;
+    render();
+  }
+
+  function render(){
+    var doneHabits = state.habits.filter(function(h){ return h.done && h.text; });
+    document.getElementById("habitsGroup").innerHTML =
+      '<div class="rhead"><span class="rdot" style="background:'+catColor(1)+'"></span><span class="rtitle">Habits</span></div>'+
+      (doneHabits.length ?
+        doneHabits.map(function(h){
+          return '<div class="rcard"><span class="rcheck">✓</span><div class="rbody">'+
+            '<div class="rname">'+esc(h.text)+'</div><div class="rmeta">Q'+h.quarter+'</div></div></div>';
+        }).join("")
+        : '<div class="empty">No habits marked done yet this year</div>');
+
+    var doneAdv = state.adventures.filter(function(a){ return a.done && a.text; })
+      .sort(function(a,b){ return a.month-b.month; });
+    document.getElementById("adventuresGroup").innerHTML =
+      '<div class="rhead"><span class="rdot" style="background:'+catColor(5)+'"></span><span class="rtitle">Mini adventures</span></div>'+
+      (doneAdv.length ?
+        doneAdv.map(function(a){
+          return '<div class="rcard"><span class="rcheck">✓</span><div class="rbody">'+
+            '<div class="rname">'+esc(a.text)+'</div><div class="rmeta">'+MONTHS[a.month-1]+'</div></div></div>';
+        }).join("")
+        : '<div class="empty">No adventures marked done yet this year</div>');
+
+    var misogiDone = state.misogi.done && state.misogi.text;
+    document.getElementById("misogiGroup").innerHTML =
+      '<div class="rhead"><span class="rdot" style="background:'+catColor(4)+'"></span><span class="rtitle">Misogi</span></div>'+
+      (misogiDone ?
+        '<div class="rcard"><span class="rcheck">✓</span><div class="rbody">'+
+          '<div class="rname">'+esc(state.misogi.text)+'</div></div></div>'
+        : '<div class="empty">Not done yet this year</div>');
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+  init();
+})();
+</script>
+</body>
+</html>
