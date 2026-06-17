@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Big Year — Plan the whole year on one sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#11152a;
+    --canvas-2:#171c38;
+    --sheet:#ffffff;
+    --ink:#181d33;
+    --ink-soft:#5a6075;
+    --hair:#e7e5dd;
+    --hair-2:#eef0f4;
+    --weekend:#f7f6f2;
+    --accent:#ff5436;
+    --accent-ink:#d63d20;
+    --today:#ff5436;
+    /* category colours */
+    --c0:#3b82f6; --c1:#22c55e; --c2:#8b5cf6; --c3:#f59e0b; --c4:#ff5436; --c5:#0ea5e9;
+    --shadow:0 24px 60px -20px rgba(0,0,0,.55);
+    --display:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--body);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, var(--canvas-2), transparent 60%),
+      var(--canvas);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 16px 80px}
+
+  /* ---------- Masthead ---------- */
+  .mast{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;margin:8px 4px 18px;
+  }
+  .brand{display:flex;flex-direction:column;gap:2px}
+  .kicker{
+    font-family:var(--display);font-weight:800;letter-spacing:.28em;
+    text-transform:uppercase;font-size:11px;color:var(--accent);
+  }
+  .title{
+    font-family:var(--display);font-weight:900;line-height:.92;
+    letter-spacing:-.02em;color:#fff;
+    font-size:clamp(34px,7vw,62px);text-transform:uppercase;
+    display:flex;align-items:baseline;gap:.28em;flex-wrap:wrap;
+  }
+  .title .yr{color:var(--accent)}
+  .yearnav{display:flex;align-items:center;gap:8px}
+  .yearnav button{
+    width:38px;height:38px;border-radius:11px;border:1px solid rgba(255,255,255,.16);
+    background:rgba(255,255,255,.06);color:#fff;font-size:18px;cursor:pointer;
+    display:grid;place-items:center;transition:background .15s,border-color .15s;
+  }
+  .yearnav button:hover{background:rgba(255,255,255,.13)}
+  .yearnav button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .today-btn{
+    height:38px;padding:0 16px;border-radius:11px;border:1px solid transparent;
+    background:var(--accent);color:#fff;font-weight:700;font-size:13px;cursor:pointer;
+    letter-spacing:.01em;transition:filter .15s;
+  }
+  .today-btn:hover{filter:brightness(1.06)}
+  .today-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+  /* ---------- Stat strip ---------- */
+  .stats{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 4px 16px;
+  }
+  .stat{
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+    border-radius:14px;padding:12px 14px;color:#fff;
+  }
+  .stat b{font-family:var(--display);font-weight:800;font-size:24px;display:block;line-height:1}
+  .stat span{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+  .progress-wrap{grid-column:1/-1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:13px 16px;color:#fff}
+  .progress-top{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;margin-bottom:9px;color:rgba(255,255,255,.72)}
+  .progress-top b{font-family:var(--display);color:#fff;font-size:13px;letter-spacing:.02em}
+  .bar{height:8px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#ff8a5b);border-radius:99px;transition:width .5s ease}
+
+  /* ---------- Goals rail ---------- */
+  .rail{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:4px 4px 12px;scrollbar-width:thin}
+  .rail::-webkit-scrollbar{height:6px}
+  .rail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:99px}
+  .goal-chip{
+    flex:0 0 auto;display:flex;align-items:center;gap:8px;cursor:pointer;
+    background:#fff;border:1px solid var(--hair);border-radius:99px;
+    padding:7px 13px 7px 11px;font-size:13px;font-weight:600;color:var(--ink);
+    transition:transform .12s, box-shadow .12s;
+  }
+  .goal-chip:hover{transform:translateY(-1px);box-shadow:0 8px 18px -10px rgba(0,0,0,.4)}
+  .goal-chip .dot{width:10px;height:10px;border-radius:99px;flex:0 0 auto}
+  .goal-chip .when{color:var(--ink-soft);font-weight:500;font-size:11px}
+  .goal-chip.done{opacity:.5;text-decoration:line-through}
+  .add-goal{
+    flex:0 0 auto;border:1px dashed rgba(255,255,255,.3);background:transparent;color:#fff;
+    border-radius:99px;padding:8px 15px;font-size:13px;font-weight:600;cursor:pointer;
+  }
+  .add-goal:hover{border-color:var(--accent);color:var(--accent)}
+  .rail-empty{color:rgba(255,255,255,.5);font-size:13px;padding:4px 6px}
+
+  /* ---------- Legend ---------- */
+  .legend{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:2px 4px 14px}
+  .legend .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-right:2px}
+  .cat{
+    display:flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.05);color:#fff;border-radius:99px;padding:6px 12px;
+    font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s,opacity .15s;
+  }
+  .cat:hover{background:rgba(255,255,255,.1)}
+  .cat .sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+  .legend.filtered .cat:not(.active){opacity:.32}
+  .edit-cats{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.55);font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .edit-cats:hover{color:#fff}
+
+  /* ---------- Rhythms ---------- */
+  .rhythms{margin:2px 4px 14px;display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(248px,1fr))}
+  .rhythms .head{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-bottom:-2px}
+  .rhythms .head .t{font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#fff}
+  .rhythms .head .sub{font-size:12px;color:rgba(255,255,255,.45)}
+  .add-rhythm{margin-left:auto;border:1px dashed rgba(255,255,255,.3);background:transparent;color:#fff;border-radius:99px;padding:6px 13px;font-size:12.5px;font-weight:600;cursor:pointer}
+  .add-rhythm:hover{border-color:var(--accent);color:var(--accent)}
+  .rcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:13px 14px 14px}
+  .rcard .rtop{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+  .rcard .rdot{width:11px;height:11px;border-radius:99px;flex:0 0 auto}
+  .rcard .rname{font-weight:700;font-size:14px;color:#fff;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rcard .rcad{font-size:11px;color:rgba(255,255,255,.5);font-weight:600;white-space:nowrap}
+  .rcard .rdel{border:none;background:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
+  .rcard .rdel:hover{color:var(--accent)}
+  .rstrip{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
+  .rmonth{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .rmonth .ml{font-size:8px;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.4);text-transform:uppercase}
+  .rmonth .mb{width:100%;height:18px;border-radius:6px;background:rgba(255,255,255,.07);cursor:default;display:grid;place-items:center;border:1px solid transparent;transition:transform .1s}
+  .rmonth.on .mb{cursor:pointer}
+  .rmonth.on .mb:hover{transform:translateY(-1px)}
+  .rmonth.on .mb{background:var(--rc,#888);opacity:.32}
+  .rmonth.done .mb{opacity:1}
+  .rmonth .mb svg{width:11px;height:11px;display:none}
+  .rmonth.done .mb svg{display:block}
+  .rcard .rprog{margin-top:10px;font-size:11px;color:rgba(255,255,255,.55);font-weight:600}
+  .rcard .rprog b{color:#fff}
+  .rempty{grid-column:1/-1;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.14);border-radius:14px;padding:14px 16px;color:rgba(255,255,255,.6);font-size:13px}
+
+  /* preset chips in rhythm modal */
+  .presets{display:flex;flex-direction:column;gap:8px;margin:4px 0 8px}
+  .preset{display:flex;align-items:center;gap:10px;border:1px solid var(--hair);background:#fff;border-radius:12px;padding:11px 12px;cursor:pointer;text-align:left;width:100%;font-family:inherit}
+  .preset:hover{border-color:var(--ink);background:#fbfbf9}
+  .preset .pd{width:12px;height:12px;border-radius:99px;flex:0 0 auto}
+  .preset .pt{font-weight:700;font-size:14px;color:var(--ink)}
+  .preset .pc{font-size:12px;color:var(--ink-soft);margin-left:auto}
+  .or-line{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:14px 0 10px}
+  .or-line::before,.or-line::after{content:"";height:1px;background:var(--hair);flex:1}
+  .row2{display:flex;gap:10px}
+  .row2 .fcol{flex:1}
+  .sel{width:100%;border:1px solid var(--hair);border-radius:11px;padding:11px 12px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff;-webkit-appearance:none;appearance:none}
+  .sel:focus{outline:none;border-color:var(--accent)}
+
+  /* ---------- The sheet / grid ---------- */
+  .sheet{
+    background:var(--sheet);border-radius:18px;box-shadow:var(--shadow);
+    border:1px solid rgba(0,0,0,.04);overflow:hidden;
+  }
+  .scroller{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+  .grid{
+    display:grid;
+    grid-template-columns:38px repeat(12, minmax(64px,1fr));
+    min-width:760px;
+  }
+  .ghead{
+    position:sticky;top:0;z-index:3;background:var(--ink);color:#fff;
+    font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.04em;
+    text-transform:uppercase;text-align:center;padding:9px 4px 7px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+  }
+  .ghead .rdots{display:flex;gap:2px}
+  .ghead .rdots i{width:5px;height:5px;border-radius:99px;display:block}
+  .ghead.corner{left:0;z-index:5;background:var(--ink)}
+  .daylabel{
+    position:sticky;left:0;z-index:2;background:#fbfbf9;color:var(--ink-soft);
+    font-size:11px;font-weight:600;text-align:center;display:flex;align-items:center;
+    justify-content:center;border-right:1px solid var(--hair);border-bottom:1px solid var(--hair-2);
+  }
+  .cell{
+    position:relative;border-right:1px solid var(--hair-2);border-bottom:1px solid var(--hair-2);
+    min-height:30px;padding:3px 4px;cursor:pointer;background:#fff;
+    display:flex;flex-direction:column;gap:2px;transition:background .1s;
+  }
+  .cell:hover{background:#fdf3ef}
+  .cell.weekend{background:var(--weekend)}
+  .cell.weekend:hover{background:#f3efe7}
+  .cell.blank{background:#fafaf8;cursor:default;border-right-color:var(--hair-2)}
+  .cell:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;z-index:1}
+  .cell .dnum{font-size:10px;font-weight:600;color:#aab;line-height:1}
+  .cell.today{background:#fff1ec}
+  .cell.today .dnum{color:var(--accent);font-weight:800}
+  .cell.today::before{
+    content:"";position:absolute;inset:2px;border:2px solid var(--today);border-radius:6px;pointer-events:none;
+  }
+  .cell .dots{display:flex;flex-wrap:wrap;gap:3px;margin-top:auto}
+  .cell .dots i{width:7px;height:7px;border-radius:99px;display:block}
+  .cell .bar{height:4px;border-radius:3px;width:100%;margin-top:auto}
+  .cell .star{position:absolute;top:2px;right:3px;font-size:10px;line-height:1;color:var(--accent)}
+  .cell.dim{opacity:.28}
+
+  /* ---------- Modal ---------- */
+  .backdrop{
+    position:fixed;inset:0;background:rgba(10,12,24,.55);backdrop-filter:blur(3px);
+    display:flex;align-items:flex-end;justify-content:center;z-index:50;
+    opacity:0;pointer-events:none;transition:opacity .2s;padding:0;
+  }
+  .backdrop.open{opacity:1;pointer-events:auto}
+  .modal{
+    background:#fff;width:100%;max-width:460px;border-radius:20px 20px 0 0;
+    padding:20px 20px 26px;transform:translateY(20px);transition:transform .24s cubic-bezier(.2,.8,.2,1);
+    max-height:88vh;overflow-y:auto;
+  }
+  .backdrop.open .modal{transform:translateY(0)}
+  @media(min-width:640px){
+    .backdrop{align-items:center}
+    .modal{border-radius:20px;transform:translateY(12px) scale(.98)}
+    .backdrop.open .modal{transform:none}
+  }
+  .m-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+  .m-date{font-family:var(--display);font-weight:800;font-size:21px;color:var(--ink);letter-spacing:-.01em}
+  .m-sub{font-size:12px;color:var(--ink-soft);margin-bottom:16px;text-transform:uppercase;letter-spacing:.08em}
+  .x{border:none;background:#f1f1ee;width:32px;height:32px;border-radius:9px;cursor:pointer;font-size:16px;color:#555}
+  .x:hover{background:#e7e7e2}
+  .entry{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--hair);border-radius:11px;margin-bottom:8px}
+  .entry .sw{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+  .entry .txt{flex:1;font-size:14px;color:var(--ink)}
+  .entry .ms{color:var(--accent);font-size:13px}
+  .entry .del{border:none;background:none;color:#bbb;cursor:pointer;font-size:15px;padding:2px 4px}
+  .entry .del:hover{color:var(--accent)}
+  .none{font-size:13px;color:var(--ink-soft);padding:6px 2px 14px}
+
+  .field{margin-top:6px}
+  .field input[type=text]{
+    width:100%;border:1px solid var(--hair);border-radius:11px;padding:12px 13px;font-size:14px;
+    font-family:inherit;color:var(--ink);outline:none;transition:border-color .15s;
+  }
+  .field input[type=text]:focus{border-color:var(--accent)}
+  .picker{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+  .swatch{width:30px;height:30px;border-radius:9px;cursor:pointer;border:2px solid transparent;position:relative}
+  .swatch.sel{border-color:var(--ink)}
+  .swatch.sel::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:14px;font-weight:700}
+  .ms-toggle{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink);cursor:pointer;margin:4px 0 16px;user-select:none}
+  .ms-toggle input{width:18px;height:18px;accent-color:var(--accent)}
+  .add-btn{
+    width:100%;background:var(--ink);color:#fff;border:none;border-radius:12px;
+    padding:13px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.01em;
+  }
+  .add-btn:hover{background:#0f1228}
+  .add-btn:disabled{opacity:.4;cursor:not-allowed}
+
+  .goal-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+  .goal-row .txt{flex:1;font-size:14px}
+  .cat-edit-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .cat-edit-row .sw{width:20px;height:20px;border-radius:6px;flex:0 0 auto}
+  .cat-edit-row input{flex:1;border:1px solid var(--hair);border-radius:9px;padding:9px 11px;font-size:14px;font-family:inherit}
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:14px;line-height:1.5}
+  label.lbl-s{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important}
+  }
+  @media(max-width:520px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .wrap{padding:18px 10px 70px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <div class="brand">
+      <div class="kicker">Plan a big year</div>
+      <h1 class="title">My Big <span class="yr" id="titleYear">2026</span></h1>
+    </div>
+    <div class="yearnav">
+      <button id="prevYear" aria-label="Previous year">‹</button>
+      <button class="today-btn" id="jumpToday">Today</button>
+      <button id="nextYear" aria-label="Next year">›</button>
+    </div>
+  </header>
+
+  <section class="stats" id="stats"></section>
+
+  <div class="rail" id="goalRail"></div>
+
+  <section class="rhythms" id="rhythms"></section>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="sheet">
+    <div class="scroller">
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+
+  <p class="hint" style="color:rgba(255,255,255,.4);text-align:center;margin-top:18px">
+    Tap any day to add a note · Tap a colour to filter · Your year saves automatically
+  </p>
+</div>
+
+<!-- Day modal -->
+<div class="backdrop" id="dayBackdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mDate">
+    <div class="m-head">
+      <div>
+        <div class="m-date" id="mDate">Date</div>
+      </div>
+      <button class="x" id="closeDay" aria-label="Close">✕</button>
+    </div>
+    <div class="m-sub" id="mSub"></div>
+    <div id="entryList"></div>
+    <div class="field">
+      <label class="lbl-s">Add a note or event</label>
+      <input type="text" id="entryInput" placeholder="e.g. Marathon, Dentist 9am, Launch day…" maxlength="80" />
+    </div>
+    <div class="picker" id="catPicker"></div>
+    <label class="ms-toggle"><input type="checkbox" id="msCheck" /> Mark as a milestone ★</label>
+    <button class="add-btn" id="addEntry" disabled>Add to this day</button>
+  </div>
+</div>
+
+<!-- Goal modal -->
+<div class="backdrop" id="goalBackdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="goalTitle">
+    <div class="m-head">
+      <div class="m-date" id="goalTitle">Goals for the year</div>
+      <button class="x" id="closeGoal" aria-label="Close">✕</button>
+    </div>
+    <div class="m-sub">Big things you want to make happen</div>
+    <div id="goalList"></div>
+    <div class="field" style="margin-top:14px">
+      <label class="lbl-s">New goal</label>
+      <input type="text" id="goalInput" placeholder="e.g. Run a half marathon" maxlength="60" />
+    </div>
+    <div class="picker" id="goalCatPicker"></div>
+    <div class="field" style="margin-bottom:12px">
+      <label class="lbl-s">Target date (optional — pins a milestone)</label>
+      <input type="date" id="goalDate" style="width:100%;border:1px solid var(--hair);border-radius:11px;padding:11px 13px;font-size:14px;font-family:inherit;margin-top:6px" />
+    </div>
+    <button class="add-btn" id="addGoal" disabled>Add goal</button>
+  </div>
+</div>
+
+<!-- Category modal -->
+<div class="backdrop" id="catBackdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="catTitle">
+    <div class="m-head">
+      <div class="m-date" id="catTitle">Rename categories</div>
+      <button class="x" id="closeCat" aria-label="Close">✕</button>
+    </div>
+    <div class="m-sub">Make the colours mean what you want</div>
+    <div id="catEditList"></div>
+    <button class="add-btn" id="saveCats" style="margin-top:10px">Save categories</button>
+  </div>
+</div>
+
+<!-- Rhythm modal -->
+<div class="backdrop" id="rhythmBackdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rhythmTitle">
+    <div class="m-head">
+      <div class="m-date" id="rhythmTitle">Add a rhythm</div>
+      <button class="x" id="closeRhythm" aria-label="Close">✕</button>
+    </div>
+    <div class="m-sub">A goal on a repeating beat across the year</div>
+
+    <div class="presets" id="presetList"></div>
+
+    <div class="or-line">or build your own</div>
+
+    <div class="field">
+      <label class="lbl-s">Name</label>
+      <input type="text" id="rhythmInput" placeholder="e.g. Travel, Try something new…" maxlength="40" />
+    </div>
+    <div class="picker" id="rhythmCatPicker"></div>
+    <div class="row2" style="margin-bottom:14px">
+      <div class="fcol">
+        <label class="lbl-s">How often</label>
+        <select class="sel" id="rhythmEvery" style="margin-top:6px">
+          <option value="1">Every month</option>
+          <option value="2" selected>Every 2 months</option>
+          <option value="3">Every 3 months</option>
+          <option value="4">Every 4 months</option>
+          <option value="6">Twice a year</option>
+          <option value="12">Once this year</option>
+        </select>
+      </div>
+      <div class="fcol">
+        <label class="lbl-s">Starting</label>
+        <select class="sel" id="rhythmStart" style="margin-top:6px"></select>
+      </div>
+    </div>
+    <button class="add-btn" id="addRhythm" disabled>Add rhythm</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Storage layer (persists across sessions; falls back to memory) ----------
+  var mem = {};
+  var hasStore = (typeof window !== "undefined" && window.storage && typeof window.storage.get === "function");
+  async function load(key, fallback){
+    try{
+      if(hasStore){ var r = await window.storage.get(key, false); return r && r.value!=null ? JSON.parse(r.value) : fallback; }
+    }catch(e){ /* key missing or error */ }
+    return (key in mem) ? mem[key] : fallback;
+  }
+  async function save(key, val){
+    mem[key] = val;
+    try{ if(hasStore){ await window.storage.set(key, JSON.stringify(val), false); } }catch(e){}
+  }
+
+  // ---------- State ----------
+  var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var MONTHS_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var DOW = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var CAT_VARS = ["--c0","--c1","--c2","--c3","--c4","--c5"];
+  var DEFAULT_CATS = [
+    {id:0,name:"Work"},{id:1,name:"Health"},{id:2,name:"Travel"},
+    {id:3,name:"Personal"},{id:4,name:"Big Goal"},{id:5,name:"Social"}
+  ];
+
+  var state = {
+    year: new Date().getFullYear(),
+    days: {},          // "2026-03-14" -> [{id,text,cat,ms}]
+    goals: [],         // {id,text,cat,date,done}
+    cats: null,        // [{id,name}]
+    filter: null,      // active category id or null
+    selKey: null,      // date key open in day modal
+    selColor: 4,       // currently chosen category in day picker
+    selMs: false,
+    goalColor: 4,
+    rhythms: [],       // {id,text,cat,every,start,done:[months]}
+    rhythmColor: 2
+  };
+
+  function catColor(i){ return getComputedStyle(document.documentElement).getPropertyValue(CAT_VARS[i]).trim(); }
+  function pad(n){ return n<10 ? "0"+n : ""+n; }
+  function key(y,m,d){ return y+"-"+pad(m+1)+"-"+pad(d); }
+  function daysInMonth(y,m){ return new Date(y,m+1,0).getDate(); }
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+  function todayKey(){ var t=new Date(); return key(t.getFullYear(),t.getMonth(),t.getDate()); }
+
+  // ---------- Init ----------
+  async function init(){
+    state.cats = await load("bigyear:cats", DEFAULT_CATS.slice());
+    state.goals = await load("bigyear:goals", []);
+    await loadYear();
+    buildPickers();
+    renderAll();
+    wire();
+  }
+  async function loadYear(){
+    state.days = await load("bigyear:days:"+state.year, {});
+    state.rhythms = await load("bigyear:rhythms:"+state.year, []);
+  }
+  async function persistDays(){ await save("bigyear:days:"+state.year, state.days); }
+  async function persistGoals(){ await save("bigyear:goals", state.goals); }
+  async function persistCats(){ await save("bigyear:cats", state.cats); }
+  async function persistRhythms(){ await save("bigyear:rhythms:"+state.year, state.rhythms); }
+
+  // months (1-12) a rhythm lands on
+  function occMonths(r){
+    var out=[], m=r.start;
+    if(r.every>=12){ return [r.start]; }
+    while(m<=12){ out.push(m); m+=r.every; }
+    return out;
+  }
+  function cadenceLabel(every){
+    return ({1:"Every month",2:"Every 2 months",3:"Every 3 months",4:"Every 4 months",6:"Twice a year",12:"Once this year"})[every]||("Every "+every+" months");
+  }
+
+  // ---------- Render: everything ----------
+  function renderAll(){
+    document.getElementById("titleYear").textContent = state.year;
+    renderStats();
+    renderGoals();
+    renderRhythms();
+    renderLegend();
+    renderGrid();
+  }
+
+  function entriesCount(){
+    var days=0, entries=0, ms=0;
+    for(var k in state.days){ if(state.days[k].length){ days++; entries+=state.days[k].length; state.days[k].forEach(function(e){ if(e.ms) ms++; }); } }
+    return {days:days, entries:entries, ms:ms};
+  }
+
+  function renderStats(){
+    var c = entriesCount();
+    var now = new Date();
+    var isThisYear = now.getFullYear()===state.year;
+    var start = new Date(state.year,0,1);
+    var end = new Date(state.year+1,0,1);
+    var total = Math.round((end-start)/86400000);
+    var elapsed = isThisYear ? Math.min(total, Math.max(0, Math.floor((now-start)/86400000)+1)) : (now.getFullYear()>state.year?total:0);
+    var left = total - elapsed;
+    var pct = Math.round(elapsed/total*100);
+    var goalDates = state.goals.filter(function(g){return g.date && g.date.indexOf(state.year+"-")===0;}).length;
+
+    var el = document.getElementById("stats");
+    el.innerHTML =
+      stat(c.days, "Days planned") +
+      stat(state.goals.length, "Goals set") +
+      stat(c.ms + goalDates, "Milestones") +
+      stat(c.entries, "Notes") +
+      '<div class="progress-wrap">'+
+        '<div class="progress-top"><span>'+(isThisYear?("Day "+elapsed+" of "+total):(now.getFullYear()>state.year?"Year complete":"Year not started"))+'</span>'+
+        '<b>'+(isThisYear? (left+" days left to make it count") : (now.getFullYear()>state.year? "✓ "+total+" days lived" : total+" days ahead"))+'</b></div>'+
+        '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+      '</div>';
+  }
+  function stat(n,label){ return '<div class="stat"><b>'+n+'</b><span>'+label+'</span></div>'; }
+
+  function renderGoals(){
+    var rail = document.getElementById("goalRail");
+    var html = "";
+    if(state.goals.length===0){
+      html = '<span class="rail-empty">No goals yet —</span>';
+    }
+    state.goals.forEach(function(g){
+      var when = "";
+      if(g.date){ var p=g.date.split("-"); when = " · "+MONTHS[parseInt(p[1],10)-1]+" "+parseInt(p[2],10); }
+      html += '<button class="goal-chip '+(g.done?"done":"")+'" data-goal="'+g.id+'">'+
+        '<span class="dot" style="background:'+catColor(g.cat)+'"></span>'+
+        esc(g.text)+'<span class="when">'+when+'</span></button>';
+    });
+    html += '<button class="add-goal" id="openGoals">+ Add goal</button>';
+    rail.innerHTML = html;
+    rail.querySelectorAll("[data-goal]").forEach(function(b){
+      b.addEventListener("click",function(){ toggleGoalDone(b.getAttribute("data-goal")); });
+    });
+    document.getElementById("openGoals").addEventListener("click", openGoalModal);
+  }
+
+  var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  function renderRhythms(){
+    var el = document.getElementById("rhythms");
+    var html = '<div class="head"><span class="t">Your year’s rhythms</span>'+
+      '<span class="sub">repeating goals across the months</span>'+
+      '<button class="add-rhythm" id="openRhythm">+ Add rhythm</button></div>';
+
+    if(state.rhythms.length===0){
+      html += '<div class="rempty">Plan the beat of your year — e.g. travel every 4 months, try something new every other month, or one tough challenge. Tap <b>+ Add rhythm</b> to start.</div>';
+    }
+
+    state.rhythms.forEach(function(r){
+      var months = occMonths(r);
+      var done = r.done||[];
+      var col = catColor(r.cat);
+      var strip = '';
+      for(var m=1;m<=12;m++){
+        var on = months.indexOf(m)>=0;
+        var isDone = on && done.indexOf(m)>=0;
+        strip += '<div class="rmonth'+(on?" on":"")+(isDone?" done":"")+'"'+(on?' data-r="'+r.id+'" data-m="'+m+'"':'')+' style="--rc:'+col+'">'+
+          '<span class="ml">'+MONTHS[m-1].charAt(0)+'</span>'+
+          '<div class="mb" style="background:'+(on?col:"")+'">'+(on?CHECK:'')+'</div></div>';
+      }
+      html += '<div class="rcard">'+
+        '<div class="rtop"><span class="rdot" style="background:'+col+'"></span>'+
+          '<span class="rname">'+esc(r.text)+'</span>'+
+          '<span class="rcad">'+cadenceLabel(r.every)+'</span>'+
+          '<button class="rdel" data-rdel="'+r.id+'" aria-label="Delete">✕</button></div>'+
+        '<div class="rstrip">'+strip+'</div>'+
+        '<div class="rprog"><b>'+done.length+'</b> of '+months.length+' done this year</div>'+
+      '</div>';
+    });
+
+    el.innerHTML = html;
+    document.getElementById("openRhythm").addEventListener("click", openRhythmModal);
+    el.querySelectorAll("[data-m]").forEach(function(b){
+      b.addEventListener("click",function(){ toggleOcc(b.getAttribute("data-r"), parseInt(b.getAttribute("data-m"),10)); });
+    });
+    el.querySelectorAll("[data-rdel]").forEach(function(b){
+      b.addEventListener("click",function(){ delRhythm(b.getAttribute("data-rdel")); });
+    });
+  }
+
+  function toggleOcc(id, month){
+    state.rhythms.forEach(function(r){
+      if(r.id===id){
+        if(!r.done) r.done=[];
+        var i=r.done.indexOf(month);
+        if(i>=0) r.done.splice(i,1); else r.done.push(month);
+      }
+    });
+    persistRhythms(); renderRhythms();
+  }
+  function delRhythm(id){ state.rhythms=state.rhythms.filter(function(r){return r.id!==id;}); persistRhythms(); renderRhythms(); renderGrid(); }
+
+  function renderLegend(){
+    var lg = document.getElementById("legend");
+    var html = '<span class="lbl">Categories</span>';
+    state.cats.forEach(function(c){
+      var active = state.filter===c.id;
+      html += '<button class="cat '+(active?"active":"")+'" data-cat="'+c.id+'">'+
+        '<span class="sw" style="background:'+catColor(c.id)+'"></span>'+esc(c.name)+'</button>';
+    });
+    html += '<button class="edit-cats" id="editCats">Rename</button>';
+    lg.className = "legend" + (state.filter!==null ? " filtered" : "");
+    lg.innerHTML = html;
+    lg.querySelectorAll("[data-cat]").forEach(function(b){
+      b.addEventListener("click",function(){
+        var id=parseInt(b.getAttribute("data-cat"),10);
+        state.filter = (state.filter===id? null : id);
+        renderLegend(); renderGrid();
+      });
+    });
+    document.getElementById("editCats").addEventListener("click", openCatModal);
+  }
+
+  function renderGrid(){
+    var g = document.getElementById("grid");
+    var tk = todayKey();
+    var html = '<div class="ghead corner"></div>';
+    for(var m=0;m<12;m++){
+      var rdots='';
+      state.rhythms.forEach(function(r){
+        if(occMonths(r).indexOf(m+1)>=0){
+          var d2=(r.done||[]).indexOf(m+1)>=0;
+          rdots += '<i style="background:'+catColor(r.cat)+';opacity:'+(d2?1:.5)+'"></i>';
+        }
+      });
+      html += '<div class="ghead"><span>'+MONTHS[m]+'</span>'+(rdots?'<span class="rdots">'+rdots+'</span>':'')+'</div>';
+    }
+    for(var d=1; d<=31; d++){
+      html += '<div class="daylabel">'+d+'</div>';
+      for(var mo=0; mo<12; mo++){
+        if(d > daysInMonth(state.year,mo)){ html += '<div class="cell blank"></div>'; continue; }
+        var k = key(state.year,mo,d);
+        var dow = new Date(state.year,mo,d).getDay();
+        var wknd = (dow===0||dow===6);
+        var list = state.days[k]||[];
+        var isToday = (k===tk);
+        var hasMs = list.some(function(e){return e.ms;}) || state.goals.some(function(gg){return gg.date===k;});
+
+        // filter dimming
+        var dim = "";
+        if(state.filter!==null){
+          var match = list.some(function(e){return e.cat===state.filter;}) || state.goals.some(function(gg){return gg.date===k && gg.cat===state.filter;});
+          if(!match && list.length) dim=" dim";
+          if(!match && !list.length) dim=" dim";
+        }
+
+        var inner = '<span class="dnum">'+d+'</span>';
+        if(hasMs) inner += '<span class="star">★</span>';
+        if(list.length){
+          if(list.length<=4){
+            var dots='';
+            list.slice(0,4).forEach(function(e){ dots += '<i style="background:'+catColor(e.cat)+'"></i>'; });
+            inner += '<span class="dots">'+dots+'</span>';
+          } else {
+            inner += '<span class="bar" style="background:'+catColor(list[0].cat)+'"></span>';
+          }
+        }
+        html += '<button class="cell'+(wknd?" weekend":"")+(isToday?" today":"")+dim+'" data-key="'+k+'" '+
+                'aria-label="'+DOW[dow]+" "+MONTHS_LONG[mo]+" "+d+'">'+inner+'</button>';
+      }
+    }
+    g.innerHTML = html;
+    g.querySelectorAll("[data-key]").forEach(function(b){
+      b.addEventListener("click",function(){ openDay(b.getAttribute("data-key")); });
+    });
+  }
+
+  // ---------- Pickers ----------
+  function buildPickers(){
+    var p = document.getElementById("catPicker");
+    var gp = document.getElementById("goalCatPicker");
+    var h="";
+    state.cats.forEach(function(c){
+      h += '<button class="swatch" data-c="'+c.id+'" title="'+esc(c.name)+'" style="background:'+catColor(c.id)+'"></button>';
+    });
+    p.innerHTML=h; gp.innerHTML=h;
+    var rp = document.getElementById("rhythmCatPicker");
+    if(rp){
+      rp.innerHTML=h;
+      rp.querySelectorAll(".swatch").forEach(function(s){
+        s.addEventListener("click",function(){ state.rhythmColor=parseInt(s.getAttribute("data-c"),10); markPicker(rp,state.rhythmColor); });
+      });
+      markPicker(rp,state.rhythmColor);
+    }
+    p.querySelectorAll(".swatch").forEach(function(s){
+      s.addEventListener("click",function(){ state.selColor=parseInt(s.getAttribute("data-c"),10); markPicker(p,state.selColor); });
+    });
+    gp.querySelectorAll(".swatch").forEach(function(s){
+      s.addEventListener("click",function(){ state.goalColor=parseInt(s.getAttribute("data-c"),10); markPicker(gp,state.goalColor); });
+    });
+    markPicker(p,state.selColor); markPicker(gp,state.goalColor);
+  }
+  function markPicker(p,sel){
+    p.querySelectorAll(".swatch").forEach(function(s){
+      s.classList.toggle("sel", parseInt(s.getAttribute("data-c"),10)===sel);
+    });
+  }
+
+  // ---------- Day modal ----------
+  function openDay(k){
+    state.selKey = k;
+    var p = k.split("-").map(Number);
+    var dt = new Date(p[0],p[1]-1,p[2]);
+    document.getElementById("mDate").textContent = MONTHS_LONG[p[1]-1]+" "+p[2];
+    document.getElementById("mSub").textContent = DOW[dt.getDay()] + " · " + p[0];
+    renderEntries();
+    document.getElementById("entryInput").value="";
+    state.selMs=false; document.getElementById("msCheck").checked=false;
+    document.getElementById("addEntry").disabled=true;
+    open("dayBackdrop");
+    setTimeout(function(){ document.getElementById("entryInput").focus(); },220);
+  }
+  function renderEntries(){
+    var list = state.days[state.selKey]||[];
+    var el = document.getElementById("entryList");
+    if(!list.length){ el.innerHTML='<div class="none">Nothing planned yet. Add the first thing below.</div>'; return; }
+    el.innerHTML = list.map(function(e){
+      var cname = (state.cats[e.cat]||{}).name||"";
+      return '<div class="entry">'+
+        '<span class="sw" style="background:'+catColor(e.cat)+'" title="'+esc(cname)+'"></span>'+
+        '<span class="txt">'+esc(e.text)+'</span>'+
+        (e.ms?'<span class="ms">★</span>':'')+
+        '<button class="del" data-id="'+e.id+'" aria-label="Delete">✕</button></div>';
+    }).join("");
+    el.querySelectorAll(".del").forEach(function(b){
+      b.addEventListener("click",function(){ delEntry(b.getAttribute("data-id")); });
+    });
+  }
+  function addEntry(){
+    var inp = document.getElementById("entryInput");
+    var t = inp.value.trim(); if(!t) return;
+    if(!state.days[state.selKey]) state.days[state.selKey]=[];
+    state.days[state.selKey].push({id:uid(),text:t,cat:state.selColor,ms:state.selMs});
+    persistDays();
+    inp.value=""; document.getElementById("addEntry").disabled=true;
+    document.getElementById("msCheck").checked=false; state.selMs=false;
+    renderEntries(); renderGrid(); renderStats();
+    inp.focus();
+  }
+  function delEntry(id){
+    var list = state.days[state.selKey]||[];
+    state.days[state.selKey] = list.filter(function(e){return e.id!==id;});
+    if(!state.days[state.selKey].length) delete state.days[state.selKey];
+    persistDays(); renderEntries(); renderGrid(); renderStats();
+  }
+
+  // ---------- Goals ----------
+  function openGoalModal(){ renderGoalList(); document.getElementById("goalInput").value=""; document.getElementById("goalDate").value=""; document.getElementById("addGoal").disabled=true; open("goalBackdrop"); }
+  function renderGoalList(){
+    var el = document.getElementById("goalList");
+    if(!state.goals.length){ el.innerHTML='<div class="none">No goals yet. What do you want this year to be about?</div>'; return; }
+    el.innerHTML = state.goals.map(function(g){
+      var when=""; if(g.date){ var p=g.date.split("-"); when=MONTHS[parseInt(p[1],10)-1]+" "+parseInt(p[2],10); }
+      return '<div class="goal-row">'+
+        '<span class="sw" style="width:12px;height:12px;border-radius:4px;background:'+catColor(g.cat)+'"></span>'+
+        '<span class="txt '+(g.done?"":"")+'" style="'+(g.done?"text-decoration:line-through;opacity:.5":"")+'">'+esc(g.text)+(when?' <span style="color:var(--ink-soft);font-size:12px">· '+when+'</span>':'')+'</span>'+
+        '<button class="del" data-done="'+g.id+'" title="Toggle done" style="border:none;background:none;color:'+(g.done?"#22c55e":"#ccc")+';cursor:pointer;font-size:15px">✓</button>'+
+        '<button class="del" data-del="'+g.id+'" aria-label="Delete" style="border:none;background:none;color:#ccc;cursor:pointer;font-size:15px">✕</button>'+
+      '</div>';
+    }).join("");
+    el.querySelectorAll("[data-del]").forEach(function(b){ b.addEventListener("click",function(){ delGoal(b.getAttribute("data-del")); }); });
+    el.querySelectorAll("[data-done]").forEach(function(b){ b.addEventListener("click",function(){ toggleGoalDone(b.getAttribute("data-done"), true); }); });
+  }
+  function addGoal(){
+    var t = document.getElementById("goalInput").value.trim(); if(!t) return;
+    var date = document.getElementById("goalDate").value || null;
+    state.goals.push({id:uid(),text:t,cat:state.goalColor,date:date,done:false});
+    persistGoals();
+    document.getElementById("goalInput").value=""; document.getElementById("goalDate").value="";
+    document.getElementById("addGoal").disabled=true;
+    renderGoalList(); renderGoals(); renderGrid(); renderStats();
+  }
+  function delGoal(id){ state.goals=state.goals.filter(function(g){return g.id!==id;}); persistGoals(); renderGoalList(); renderGoals(); renderGrid(); renderStats(); }
+  function toggleGoalDone(id, inModal){
+    state.goals.forEach(function(g){ if(g.id===id) g.done=!g.done; });
+    persistGoals(); renderGoals();
+    if(inModal) renderGoalList();
+  }
+
+  // ---------- Categories ----------
+  function openCatModal(){
+    var el = document.getElementById("catEditList");
+    el.innerHTML = state.cats.map(function(c){
+      return '<div class="cat-edit-row"><span class="sw" style="background:'+catColor(c.id)+'"></span>'+
+        '<input type="text" data-cid="'+c.id+'" value="'+esc(c.name)+'" maxlength="18" /></div>';
+    }).join("");
+    open("catBackdrop");
+  }
+  function saveCats(){
+    document.querySelectorAll("#catEditList input").forEach(function(inp){
+      var id=parseInt(inp.getAttribute("data-cid"),10);
+      var v=inp.value.trim(); if(v) state.cats[id].name=v;
+    });
+    persistCats(); buildPickers(); renderLegend(); renderEntries(); close("catBackdrop");
+  }
+
+  // ---------- Rhythm modal ----------
+  var PRESETS = [
+    {text:"Travel",            cat:2, every:4,  start:1},
+    {text:"Try something new", cat:5, every:2,  start:2},
+    {text:"One tough challenge",cat:4,every:12, start:6}
+  ];
+  function fillMonthSelect(){
+    var sel=document.getElementById("rhythmStart");
+    var h=""; for(var m=1;m<=12;m++){ h+='<option value="'+m+'">'+MONTHS_LONG[m-1]+'</option>'; }
+    sel.innerHTML=h; sel.value="1";
+  }
+  function renderPresets(){
+    var el=document.getElementById("presetList");
+    el.innerHTML = PRESETS.map(function(p,i){
+      return '<button class="preset" data-preset="'+i+'">'+
+        '<span class="pd" style="background:'+catColor(p.cat)+'"></span>'+
+        '<span class="pt">'+esc(p.text)+'</span>'+
+        '<span class="pc">'+cadenceLabel(p.every)+'</span></button>';
+    }).join("");
+    el.querySelectorAll("[data-preset]").forEach(function(b){
+      b.addEventListener("click",function(){ addRhythmFrom(PRESETS[parseInt(b.getAttribute("data-preset"),10)]); });
+    });
+  }
+  function openRhythmModal(){
+    renderPresets();
+    fillMonthSelect();
+    document.getElementById("rhythmInput").value="";
+    document.getElementById("rhythmEvery").value="2";
+    state.rhythmColor=2; markPicker(document.getElementById("rhythmCatPicker"),2);
+    document.getElementById("addRhythm").disabled=true;
+    open("rhythmBackdrop");
+  }
+  function addRhythmFrom(p){
+    state.rhythms.push({id:uid(),text:p.text,cat:p.cat,every:p.every,start:p.start,done:[]});
+    persistRhythms(); renderRhythms(); renderGrid(); close("rhythmBackdrop");
+  }
+  function addRhythm(){
+    var t=document.getElementById("rhythmInput").value.trim(); if(!t) return;
+    var every=parseInt(document.getElementById("rhythmEvery").value,10);
+    var start=parseInt(document.getElementById("rhythmStart").value,10);
+    state.rhythms.push({id:uid(),text:t,cat:state.rhythmColor,every:every,start:start,done:[]});
+    persistRhythms(); renderRhythms(); renderGrid(); close("rhythmBackdrop");
+  }
+
+  // ---------- Modal helpers ----------
+  function open(id){ document.getElementById(id).classList.add("open"); }
+  function close(id){ document.getElementById(id).classList.remove("open"); }
+  function closeAll(){ ["dayBackdrop","goalBackdrop","catBackdrop","rhythmBackdrop"].forEach(close); }
+
+  // ---------- Wire ----------
+  function wire(){
+    document.getElementById("prevYear").addEventListener("click", async function(){ state.year--; await loadYear(); renderAll(); });
+    document.getElementById("nextYear").addEventListener("click", async function(){ state.year++; await loadYear(); renderAll(); });
+    document.getElementById("jumpToday").addEventListener("click", async function(){
+      var y=new Date().getFullYear();
+      if(y!==state.year){ state.year=y; await loadYear(); renderAll(); }
+      var cell=document.querySelector('[data-key="'+todayKey()+'"]');
+      if(cell){ cell.scrollIntoView({block:"center",inline:"center",behavior:"smooth"}); cell.focus(); }
+    });
+
+    var inp=document.getElementById("entryInput");
+    inp.addEventListener("input",function(){ document.getElementById("addEntry").disabled = inp.value.trim()===""; });
+    inp.addEventListener("keydown",function(e){ if(e.key==="Enter" && inp.value.trim()){ addEntry(); } });
+    document.getElementById("msCheck").addEventListener("change",function(e){ state.selMs=e.target.checked; });
+    document.getElementById("addEntry").addEventListener("click", addEntry);
+    document.getElementById("closeDay").addEventListener("click",function(){ close("dayBackdrop"); });
+
+    var gi=document.getElementById("goalInput");
+    gi.addEventListener("input",function(){ document.getElementById("addGoal").disabled = gi.value.trim()===""; });
+    gi.addEventListener("keydown",function(e){ if(e.key==="Enter" && gi.value.trim()){ addGoal(); } });
+    document.getElementById("addGoal").addEventListener("click", addGoal);
+    document.getElementById("closeGoal").addEventListener("click",function(){ close("goalBackdrop"); });
+
+    document.getElementById("closeCat").addEventListener("click",function(){ close("catBackdrop"); });
+    document.getElementById("saveCats").addEventListener("click", saveCats);
+
+    var ri=document.getElementById("rhythmInput");
+    ri.addEventListener("input",function(){ document.getElementById("addRhythm").disabled = ri.value.trim()===""; });
+    ri.addEventListener("keydown",function(e){ if(e.key==="Enter" && ri.value.trim()){ addRhythm(); } });
+    document.getElementById("addRhythm").addEventListener("click", addRhythm);
+    document.getElementById("closeRhythm").addEventListener("click",function(){ close("rhythmBackdrop"); });
+
+    ["dayBackdrop","goalBackdrop","catBackdrop","rhythmBackdrop"].forEach(function(id){
+      document.getElementById(id).addEventListener("click",function(e){ if(e.target.id===id) close(id); });
+    });
+    document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeAll(); });
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+  init();
+})();
+</script>
+</body>
+</html>
