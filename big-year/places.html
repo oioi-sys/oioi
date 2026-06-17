@@ -9,13 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --canvas:#11152a;
-    --canvas-2:#171c38;
-    --ink:#181d33;
-    --ink-soft:#5a6075;
-    --hair:#e7e5dd;
-    --accent:#ff5436;
-    --c0:#3b82f6; --c1:#22c55e; --c2:#8b5cf6; --c3:#f59e0b; --c4:#ff5436; --c5:#0ea5e9;
+    --canvas:#000000;
+    --sheet:#f4f1e6;
+    --ink:#13151f;
+    --ink-soft:#5b6472;
+    --hair:#cdbfa0;
+    --accent:#cfe7ff;
+    --c0:#5b6b8c; --c1:#4f7a8b; --c2:#6c5b7b; --c3:#b2702f; --c4:#9c3b3b; --c5:#7d8b99;
     --display:'Archivo','Helvetica Neue',Arial,sans-serif;
     --body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   }
@@ -23,9 +23,7 @@
   html,body{margin:0;padding:0}
   body{
     font-family:var(--body);
-    background:
-      radial-gradient(1200px 600px at 50% -10%, var(--canvas-2), transparent 60%),
-      var(--canvas);
+    background:var(--canvas);
     color:var(--ink);
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
@@ -62,7 +60,7 @@
   }
   .city-form input[type=text]::placeholder{color:rgba(255,255,255,.4)}
   .city-form input[type=text]:focus{border-color:var(--accent)}
-  .city-btn{background:var(--accent);color:#fff;border:none;border-radius:11px;padding:0 18px;font-weight:700;font-size:13px;cursor:pointer}
+  .city-btn{background:var(--accent);color:#14151f;border:none;border-radius:11px;padding:0 18px;font-weight:700;font-size:13px;cursor:pointer}
   .city-btn:hover{filter:brightness(1.06)}
   .legend{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:2px 4px 14px}
   .legend .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-right:2px}
@@ -99,7 +97,7 @@
   }
   .backdrop.open{opacity:1;pointer-events:auto}
   .modal{
-    background:#fff;width:100%;max-width:460px;border-radius:20px 20px 0 0;
+    background:var(--sheet);width:100%;max-width:460px;border-radius:20px 20px 0 0;
     padding:20px 20px 26px;transform:translateY(20px);transition:transform .24s cubic-bezier(.2,.8,.2,1);
     max-height:88vh;overflow-y:auto;
   }

@@ -9,18 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --canvas:#11152a;
-    --canvas-2:#171c38;
-    --sheet:#ffffff;
-    --ink:#181d33;
-    --ink-soft:#5a6075;
-    --hair:#e7e5dd;
-    --hair-2:#eef0f4;
-    --accent:#ff5436;
-    --accent-ink:#d63d20;
+    --canvas:#000000;
+    --ink:#13151f;
+    --ink-soft:#5b6472;
+    --accent:#cfe7ff;
     /* category colours */
-    --c0:#3b82f6; --c1:#22c55e; --c2:#8b5cf6; --c3:#f59e0b; --c4:#ff5436; --c5:#0ea5e9;
-    --shadow:0 24px 60px -20px rgba(0,0,0,.55);
+    --c0:#5b6b8c; --c1:#4f7a8b; --c2:#6c5b7b; --c3:#b2702f; --c4:#9c3b3b; --c5:#7d8b99;
+    --shadow:0 24px 60px -20px rgba(0,0,0,.65);
     --display:'Archivo','Helvetica Neue',Arial,sans-serif;
     --body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   }
@@ -28,9 +23,7 @@
   html,body{margin:0;padding:0}
   body{
     font-family:var(--body);
-    background:
-      radial-gradient(1200px 600px at 50% -10%, var(--canvas-2), transparent 60%),
-      var(--canvas);
+    background:var(--canvas);
     color:var(--ink);
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
@@ -66,7 +59,7 @@
   .qlabel .qrange{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em}
   .qnav .qtoday{
     width:auto;flex:0 0 auto;height:36px;padding:0 14px;border-radius:11px;border:1px solid transparent;
-    background:var(--accent);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;
+    background:var(--accent);color:#14151f;font-weight:700;font-size:12.5px;cursor:pointer;
     white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;
   }
   .qtoday:hover{filter:brightness(1.06)}
@@ -90,7 +83,7 @@
     border-radius:99px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;
   }
   .qdone:hover{border-color:var(--accent);color:var(--accent)}
-  .qdone.done{background:#22c55e;border-color:#22c55e;color:#0a2818}
+  .qdone.done{background:#3f8f5c;border-color:#3f8f5c;color:#0a1f12}
   .advmonth{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px;font-weight:700}
   .advrow{display:flex;gap:8px;flex-wrap:wrap}
   .findnearby{
@@ -146,6 +139,14 @@
     <div class="pl-body">
       <div class="pl-title">Things to do nearby</div>
       <div class="pl-sub">Search activities near a city, powered by OpenTripMap</div>
+    </div>
+    <span class="pl-arrow">→</span>
+  </a>
+
+  <a class="placeslink" href="year.html">
+    <div class="pl-body">
+      <div class="pl-title">What you've done this year</div>
+      <div class="pl-sub">See every completed habit, adventure, and misogi</div>
     </div>
     <span class="pl-arrow">→</span>
   </a>
@@ -229,7 +230,7 @@
 
     var due = state.adventures.filter(function(a){ return qm.indexOf(a.month)>=0; });
     document.getElementById("adventureSection").innerHTML =
-      '<div class="qhead" style="margin:0 4px 4px"><span class="qdot" style="background:'+catColor(5)+'"></span><span class="qtitle">Mini adventures this quarter</span></div>'+
+      '<div class="qhead" style="margin:0 4px 4px"><span class="qdot" style="background:'+catColor(5)+'"></span><span class="qtitle">Mini adventure this quarter x2</span></div>'+
       due.map(function(a){
         return '<div class="qcard">'+
           '<div class="advmonth">'+MONTHS[a.month-1]+'</div>'+
