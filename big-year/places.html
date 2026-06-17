@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Things to do — My Big Year</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#11152a;
+    --canvas-2:#171c38;
+    --ink:#181d33;
+    --ink-soft:#5a6075;
+    --hair:#e7e5dd;
+    --accent:#ff5436;
+    --c0:#3b82f6; --c1:#22c55e; --c2:#8b5cf6; --c3:#f59e0b; --c4:#ff5436; --c5:#0ea5e9;
+    --display:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--body);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, var(--canvas-2), transparent 60%),
+      var(--canvas);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 16px 80px}
+
+  .back{
+    display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+    color:rgba(255,255,255,.6);font-size:13px;font-weight:600;margin:4px 4px 16px;
+  }
+  .back:hover{color:#fff}
+
+  .mast{margin:0 4px 22px}
+  .kicker{
+    font-family:var(--display);font-weight:800;letter-spacing:.28em;
+    text-transform:uppercase;font-size:11px;color:var(--accent);
+  }
+  .title{
+    font-family:var(--display);font-weight:900;line-height:.92;
+    letter-spacing:-.02em;color:#fff;
+    font-size:clamp(28px,6vw,44px);text-transform:uppercase;margin-top:2px;
+  }
+
+  /* ---------- Things to do ---------- */
+  .places{margin:2px 4px 14px}
+  .phead{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .phead .sub{font-size:12px;color:rgba(255,255,255,.45)}
+  .city-form{display:flex;gap:8px;margin:2px 0 12px}
+  .city-form input[type=text]{
+    flex:1;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);
+    color:#fff;border-radius:11px;padding:11px 13px;font-size:14px;font-family:inherit;outline:none;
+    transition:border-color .15s;
+  }
+  .city-form input[type=text]::placeholder{color:rgba(255,255,255,.4)}
+  .city-form input[type=text]:focus{border-color:var(--accent)}
+  .city-btn{background:var(--accent);color:#fff;border:none;border-radius:11px;padding:0 18px;font-weight:700;font-size:13px;cursor:pointer}
+  .city-btn:hover{filter:brightness(1.06)}
+  .legend{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:2px 4px 14px}
+  .legend .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-right:2px}
+  .cat{
+    display:flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.05);color:#fff;border-radius:99px;padding:6px 12px;
+    font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s,opacity .15s;
+  }
+  .cat:hover{background:rgba(255,255,255,.1)}
+  .cat .sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+  .legend.filtered .cat:not(.active){opacity:.32}
+  .edit-cats{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.55);font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .edit-cats:hover{color:#fff}
+  .kw-input{
+    width:100%;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);
+    color:#fff;border-radius:11px;padding:11px 13px;font-size:14px;font-family:inherit;outline:none;
+    transition:border-color .15s;margin:0 0 14px;
+  }
+  .kw-input::placeholder{color:rgba(255,255,255,.4)}
+  .kw-input:focus{border-color:var(--accent)}
+  .places-status{font-size:13px;color:rgba(255,255,255,.55);margin:2px 4px 10px}
+  .places-list{display:grid;gap:8px}
+  .place-card{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:11px 13px}
+  .pdot{width:10px;height:10px;border-radius:99px;margin-top:4px;flex:0 0 auto}
+  .pbody{flex:1;min-width:0}
+  .pname{font-weight:700;font-size:14px;color:#fff}
+  .pmeta{font-size:11.5px;color:rgba(255,255,255,.5);margin-top:2px}
+
+  /* ---------- Modal ---------- */
+  .backdrop{
+    position:fixed;inset:0;background:rgba(10,12,24,.55);backdrop-filter:blur(3px);
+    display:flex;align-items:flex-end;justify-content:center;z-index:50;
+    opacity:0;pointer-events:none;transition:opacity .2s;padding:0;
+  }
+  .backdrop.open{opacity:1;pointer-events:auto}
+  .modal{
+    background:#fff;width:100%;max-width:460px;border-radius:20px 20px 0 0;
+    padding:20px 20px 26px;transform:translateY(20px);transition:transform .24s cubic-bezier(.2,.8,.2,1);
+    max-height:88vh;overflow-y:auto;
+  }
+  .backdrop.open .modal{transform:translateY(0)}
+  @media(min-width:640px){
+    .backdrop{align-items:center}
+    .modal{border-radius:20px;transform:translateY(12px) scale(.98)}
+    .backdrop.open .modal{transform:none}
+  }
+  .m-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+  .m-date{font-family:var(--display);font-weight:800;font-size:21px;color:var(--ink);letter-spacing:-.01em}
+  .m-sub{font-size:12px;color:var(--ink-soft);margin-bottom:16px;text-transform:uppercase;letter-spacing:.08em}
+  .x{border:none;background:#f1f1ee;width:32px;height:32px;border-radius:9px;cursor:pointer;font-size:16px;color:#555}
+  .x:hover{background:#e7e7e2}
+
+  .field{margin-top:6px}
+  .field input[type=text]{
+    width:100%;border:1px solid var(--hair);border-radius:11px;padding:12px 13px;font-size:14px;
+    font-family:inherit;color:var(--ink);outline:none;transition:border-color .15s;
+  }
+  .field input[type=text]:focus{border-color:var(--accent)}
+  .add-btn{
+    width:100%;background:var(--ink);color:#fff;border:none;border-radius:12px;
+    padding:13px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.01em;
+  }
+  .add-btn:hover{background:#0f1228}
+  .add-btn:disabled{opacity:.4;cursor:not-allowed}
+
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:14px;line-height:1.5}
+  label.lbl-s{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important}
+  }
+  @media(max-width:520px){
+    .wrap{padding:18px 10px 70px}
+    .city-form{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="index.html">← Back to My Big Year</a>
+
+  <header class="mast">
+    <div class="kicker">Plan a big year</div>
+    <h1 class="title">Things to do</h1>
+  </header>
+
+  <section class="places" id="placesSection">
+    <div class="phead">
+      <span class="sub">Find activities near a city, powered by OpenTripMap</span>
+      <button class="edit-cats" id="openApiKey">API key</button>
+    </div>
+    <form class="city-form" id="cityForm">
+      <input type="text" id="cityInput" placeholder="e.g. Lisbon, Tokyo, your hometown…" maxlength="60" />
+      <button type="submit" class="city-btn">Search</button>
+    </form>
+    <div class="legend" id="kindsLegend"></div>
+    <input type="text" id="keywordInput" class="kw-input" placeholder="Filter by keyword…" maxlength="40" />
+    <div class="places-status" id="placesStatus"></div>
+    <div class="places-list" id="placesList"></div>
+  </section>
+
+  <p class="hint" style="color:rgba(255,255,255,.4);text-align:center;margin-top:18px">
+    Your API key stays only in this browser
+  </p>
+</div>
+
+<!-- API key modal -->
+<div class="backdrop" id="apiKeyBackdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="apiKeyTitle">
+    <div class="m-head">
+      <div class="m-date" id="apiKeyTitle">Connect OpenTripMap</div>
+      <button class="x" id="closeApiKey" aria-label="Close">✕</button>
+    </div>
+    <div class="m-sub">Needed to search for things to do</div>
+    <p class="hint" style="margin-top:0">Get a free key at opentripmap.io, then paste it below. It's stored only in this browser and is sent directly to OpenTripMap when you search.</p>
+    <div class="field">
+      <label class="lbl-s">API key</label>
+      <input type="text" id="apiKeyInput" placeholder="Paste your OpenTripMap API key" maxlength="120" />
+    </div>
+    <button class="add-btn" id="saveApiKey" disabled style="margin-top:14px">Save key</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Storage layer (persists across sessions; falls back to memory) ----------
+  var mem = {};
+  var hasStore = (typeof window !== "undefined" && window.storage && typeof window.storage.get === "function");
+  async function load(key, fallback){
+    try{
+      if(hasStore){ var r = await window.storage.get(key, false); return r && r.value!=null ? JSON.parse(r.value) : fallback; }
+    }catch(e){ /* key missing or error */ }
+    return (key in mem) ? mem[key] : fallback;
+  }
+  async function save(key, val){
+    mem[key] = val;
+    try{ if(hasStore){ await window.storage.set(key, JSON.stringify(val), false); } }catch(e){}
+  }
+
+  // ---------- Constants ----------
+  var CAT_VARS = ["--c0","--c1","--c2","--c3","--c4","--c5"];
+  var KINDS = [
+    {id:"interesting_places", name:"Sights",      c:0},
+    {id:"museums",            name:"Museums",     c:1},
+    {id:"architecture",       name:"Architecture",c:2},
+    {id:"foods",              name:"Food & drink",c:3},
+    {id:"natural",            name:"Nature",      c:4},
+    {id:"amusements",         name:"Entertainment",c:5}
+  ];
+
+  var state = {
+    apiKey: "",
+    city: "",
+    places: [],
+    placesStatus: "idle",   // idle | loading | error | ok
+    placesError: "",
+    placeFilter: null,      // selected kind id or null
+    placeQuery: ""
+  };
+
+  function catColor(i){ return getComputedStyle(document.documentElement).getPropertyValue(CAT_VARS[i]).trim(); }
+
+  // ---------- Init ----------
+  async function init(){
+    state.apiKey = await load("bigyear:apikey", "");
+    state.city = await load("bigyear:places:city", "");
+    renderKindsLegend();
+    renderPlaces();
+    wire();
+    if(state.city){
+      document.getElementById("cityInput").value = state.city;
+      if(state.apiKey){ runCitySearch(); }
+    }
+  }
+
+  // ---------- Things to do ----------
+  function renderKindsLegend(){
+    var lg = document.getElementById("kindsLegend");
+    var html = '<span class="lbl">Categories</span>';
+    KINDS.forEach(function(k){
+      var active = state.placeFilter===k.id;
+      html += '<button class="cat '+(active?"active":"")+'" data-kind="'+k.id+'">'+
+        '<span class="sw" style="background:'+catColor(k.c)+'"></span>'+esc(k.name)+'</button>';
+    });
+    lg.className = "legend"+(state.placeFilter!==null?" filtered":"");
+    lg.innerHTML = html;
+    lg.querySelectorAll("[data-kind]").forEach(function(b){
+      b.addEventListener("click",function(){
+        var id=b.getAttribute("data-kind");
+        state.placeFilter = (state.placeFilter===id ? null : id);
+        renderKindsLegend(); renderPlaces();
+      });
+    });
+  }
+
+  function placeMatchesFilter(p){
+    if(!state.placeFilter) return true;
+    return (p.kinds||"").split(",").indexOf(state.placeFilter)>=0;
+  }
+  function placeMatchesQuery(p){
+    if(!state.placeQuery) return true;
+    return (p.name||"").toLowerCase().indexOf(state.placeQuery.toLowerCase())>=0;
+  }
+
+  function renderPlaces(){
+    var statusEl = document.getElementById("placesStatus");
+    var el = document.getElementById("placesList");
+
+    if(!state.apiKey){
+      statusEl.textContent = "Add an API key to search for things to do.";
+      el.innerHTML = ""; return;
+    }
+    if(state.placesStatus==="loading"){ statusEl.textContent="Searching…"; el.innerHTML=""; return; }
+    if(state.placesStatus==="error"){ statusEl.textContent=state.placesError||"Something went wrong."; el.innerHTML=""; return; }
+    if(!state.city){ statusEl.textContent="Enter a city to see things to do nearby."; el.innerHTML=""; return; }
+
+    var filtered = state.places.filter(function(p){ return placeMatchesFilter(p) && placeMatchesQuery(p); });
+    if(!filtered.length){ statusEl.textContent="No matches. Try a different category or keyword."; el.innerHTML=""; return; }
+
+    statusEl.textContent = filtered.length+" places near "+state.city;
+    el.innerHTML = filtered.map(function(p){
+      var kindId = (p.kinds||"").split(",")[0];
+      var kindInfo = KINDS.filter(function(k){ return k.id===kindId; })[0];
+      var col = kindInfo ? catColor(kindInfo.c) : catColor(0);
+      var dist = (typeof p.dist==="number") ? Math.round(p.dist)+" m away" : "";
+      return '<div class="place-card">'+
+        '<span class="pdot" style="background:'+col+'"></span>'+
+        '<div class="pbody"><div class="pname">'+esc(p.name||"Unnamed place")+'</div>'+
+        '<div class="pmeta">'+(kindInfo?esc(kindInfo.name):esc(kindId||""))+(dist?" · "+dist:"")+'</div></div>'+
+      '</div>';
+    }).join("");
+  }
+
+  async function geocodeCity(name){
+    var url = "https://api.opentripmap.com/0.1/en/places/geoname?name="+encodeURIComponent(name)+"&apikey="+encodeURIComponent(state.apiKey);
+    var res = await fetch(url);
+    if(!res.ok) throw new Error("Could not look up that city.");
+    var data = await res.json();
+    if(!data || typeof data.lat!=="number" || typeof data.lon!=="number") throw new Error("City not found.");
+    return data;
+  }
+  async function searchPlaces(lat, lon){
+    var url = "https://api.opentripmap.com/0.1/en/places/radius?radius=10000&lon="+lon+"&lat="+lat+"&limit=50&format=json&apikey="+encodeURIComponent(state.apiKey);
+    var res = await fetch(url);
+    if(!res.ok) throw new Error("Could not load things to do.");
+    var data = await res.json();
+    return Array.isArray(data) ? data : [];
+  }
+  async function runCitySearch(){
+    var name = document.getElementById("cityInput").value.trim();
+    if(!name) return;
+    if(!state.apiKey){ openApiKeyModal(); return; }
+
+    state.city = name;
+    save("bigyear:places:city", name);
+    state.placesStatus = "loading"; state.placesError=""; renderPlaces();
+    try{
+      var geo = await geocodeCity(name);
+      var pois = await searchPlaces(geo.lat, geo.lon);
+      state.places = pois;
+      state.placesStatus = "ok";
+    }catch(err){
+      state.placesStatus = "error";
+      state.placesError = (err && err.message) || "Something went wrong.";
+      state.places = [];
+    }
+    renderPlaces();
+  }
+
+  function openApiKeyModal(){
+    document.getElementById("apiKeyInput").value = state.apiKey||"";
+    document.getElementById("saveApiKey").disabled = true;
+    open("apiKeyBackdrop");
+  }
+  async function saveApiKeyFromInput(){
+    var v = document.getElementById("apiKeyInput").value.trim();
+    if(!v) return;
+    state.apiKey = v;
+    await save("bigyear:apikey", v);
+    close("apiKeyBackdrop");
+    if(document.getElementById("cityInput").value.trim()){
+      runCitySearch();
+    } else {
+      renderPlaces();
+    }
+  }
+
+  // ---------- Modal helpers ----------
+  function open(id){ document.getElementById(id).classList.add("open"); }
+  function close(id){ document.getElementById(id).classList.remove("open"); }
+  function closeAll(){ close("apiKeyBackdrop"); }
+
+  // ---------- Wire ----------
+  function wire(){
+    document.getElementById("cityForm").addEventListener("submit", function(e){ e.preventDefault(); runCitySearch(); });
+
+    var kwInp = document.getElementById("keywordInput");
+    var kwTimer;
+    kwInp.addEventListener("input", function(){
+      state.placeQuery = kwInp.value;
+      clearTimeout(kwTimer);
+      kwTimer = setTimeout(renderPlaces, 150);
+    });
+
+    document.getElementById("openApiKey").addEventListener("click", openApiKeyModal);
+    var akInp = document.getElementById("apiKeyInput");
+    akInp.addEventListener("input", function(){ document.getElementById("saveApiKey").disabled = akInp.value.trim()===""; });
+    akInp.addEventListener("keydown", function(e){ if(e.key==="Enter" && akInp.value.trim()){ saveApiKeyFromInput(); } });
+    document.getElementById("saveApiKey").addEventListener("click", saveApiKeyFromInput);
+    document.getElementById("closeApiKey").addEventListener("click", function(){ close("apiKeyBackdrop"); });
+
+    document.getElementById("apiKeyBackdrop").addEventListener("click",function(e){ if(e.target.id==="apiKeyBackdrop") close("apiKeyBackdrop"); });
+    document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeAll(); });
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+  init();
+})();
+</script>
+</body>
+</html>

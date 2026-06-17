@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>My Big Year — Rhythms &amp; things to do</title>
+<title>My Big Year — Quarterly check-in</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -53,142 +53,71 @@
   }
   .title .yr{color:var(--accent)}
 
-  /* ---------- Legend (reused for rhythm colours & place categories) ---------- */
-  .legend{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:2px 4px 14px}
-  .legend .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-right:2px}
-  .cat{
-    display:flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.12);
-    background:rgba(255,255,255,.05);color:#fff;border-radius:99px;padding:6px 12px;
-    font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s,opacity .15s;
+  /* ---------- Quarter navigation ---------- */
+  .qnav{display:flex;align-items:center;gap:10px;margin:2px 4px 18px}
+  .qnav button{
+    width:36px;height:36px;border-radius:11px;border:1px solid rgba(255,255,255,.16);
+    background:rgba(255,255,255,.06);color:#fff;font-size:18px;cursor:pointer;
+    display:grid;place-items:center;flex:0 0 auto;
   }
-  .cat:hover{background:rgba(255,255,255,.1)}
-  .cat .sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
-  .legend.filtered .cat:not(.active){opacity:.32}
-  .edit-cats{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.55);font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-  .edit-cats:hover{color:#fff}
-
-  /* ---------- Rhythms ---------- */
-  .rhythms{margin:2px 4px 22px;display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(248px,1fr))}
-  .rhythms .head{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-bottom:-2px}
-  .rhythms .head .t{font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#fff}
-  .rhythms .head .sub{font-size:12px;color:rgba(255,255,255,.45)}
-  .add-rhythm{margin-left:auto;border:1px dashed rgba(255,255,255,.3);background:transparent;color:#fff;border-radius:99px;padding:6px 13px;font-size:12.5px;font-weight:600;cursor:pointer}
-  .add-rhythm:hover{border-color:var(--accent);color:var(--accent)}
-  .rcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:13px 14px 14px}
-  .rcard .rtop{display:flex;align-items:center;gap:9px;margin-bottom:11px}
-  .rcard .rdot{width:11px;height:11px;border-radius:99px;flex:0 0 auto}
-  .rcard .rname{font-weight:700;font-size:14px;color:#fff;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .rcard .rcad{font-size:11px;color:rgba(255,255,255,.5);font-weight:600;white-space:nowrap}
-  .rcard .rdel{border:none;background:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
-  .rcard .rdel:hover{color:var(--accent)}
-  .rstrip{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
-  .rmonth{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px}
-  .rmonth .ml{font-size:8px;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.4);text-transform:uppercase}
-  .rmonth .mb{width:100%;height:18px;border-radius:6px;background:rgba(255,255,255,.07);cursor:default;display:grid;place-items:center;border:1px solid transparent;transition:transform .1s}
-  .rmonth.on .mb{cursor:pointer}
-  .rmonth.on .mb:hover{transform:translateY(-1px)}
-  .rmonth.on .mb{background:var(--rc,#888);opacity:.32}
-  .rmonth.done .mb{opacity:1}
-  .rmonth .mb svg{width:11px;height:11px;display:none}
-  .rmonth.done .mb svg{display:block}
-  .rcard .rprog{margin-top:10px;font-size:11px;color:rgba(255,255,255,.55);font-weight:600}
-  .rcard .rprog b{color:#fff}
-  .rempty{grid-column:1/-1;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.14);border-radius:14px;padding:14px 16px;color:rgba(255,255,255,.6);font-size:13px}
-
-  /* preset chips in rhythm modal */
-  .presets{display:flex;flex-direction:column;gap:8px;margin:4px 0 8px}
-  .preset{display:flex;align-items:center;gap:10px;border:1px solid var(--hair);background:#fff;border-radius:12px;padding:11px 12px;cursor:pointer;text-align:left;width:100%;font-family:inherit}
-  .preset:hover{border-color:var(--ink);background:#fbfbf9}
-  .preset .pd{width:12px;height:12px;border-radius:99px;flex:0 0 auto}
-  .preset .pt{font-weight:700;font-size:14px;color:var(--ink)}
-  .preset .pc{font-size:12px;color:var(--ink-soft);margin-left:auto}
-  .or-line{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:14px 0 10px}
-  .or-line::before,.or-line::after{content:"";height:1px;background:var(--hair);flex:1}
-  .row2{display:flex;gap:10px}
-  .row2 .fcol{flex:1}
-  .sel{width:100%;border:1px solid var(--hair);border-radius:11px;padding:11px 12px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff;-webkit-appearance:none;appearance:none}
-  .sel:focus{outline:none;border-color:var(--accent)}
-
-  /* ---------- Things to do ---------- */
-  .places{margin:2px 4px 14px}
-  .phead{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-  .phead .t{font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#fff}
-  .phead .sub{font-size:12px;color:rgba(255,255,255,.45)}
-  .city-form{display:flex;gap:8px;margin:2px 0 12px}
-  .city-form input[type=text]{
-    flex:1;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);
-    color:#fff;border-radius:11px;padding:11px 13px;font-size:14px;font-family:inherit;outline:none;
-    transition:border-color .15s;
+  .qnav button:hover{background:rgba(255,255,255,.13)}
+  .qlabel{display:flex;flex-direction:column;align-items:center;flex:1;line-height:1.25;min-width:0}
+  .qlabel .qname{font-family:var(--display);font-weight:900;font-size:19px;color:#fff;letter-spacing:.02em}
+  .qlabel .qrange{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em}
+  .qnav .qtoday{
+    width:auto;flex:0 0 auto;height:36px;padding:0 14px;border-radius:11px;border:1px solid transparent;
+    background:var(--accent);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;
+    white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;
   }
-  .city-form input[type=text]::placeholder{color:rgba(255,255,255,.4)}
-  .city-form input[type=text]:focus{border-color:var(--accent)}
-  .city-btn{background:var(--accent);color:#fff;border:none;border-radius:11px;padding:0 18px;font-weight:700;font-size:13px;cursor:pointer}
-  .city-btn:hover{filter:brightness(1.06)}
-  .kw-input{
+  .qtoday:hover{filter:brightness(1.06)}
+
+  /* ---------- Quarter cards ---------- */
+  .qsection{margin:0 4px 18px}
+  .qcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:14px 16px;margin-bottom:10px}
+  .qhead{display:flex;align-items:baseline;gap:9px;margin-bottom:4px}
+  .qdot{width:11px;height:11px;border-radius:99px;flex:0 0 auto;margin-top:2px}
+  .qtitle{font-weight:700;font-size:14px;color:#fff}
+  .qcard .sub{font-size:12px;color:rgba(255,255,255,.5);margin:0 0 12px 20px}
+  .qinput{
     width:100%;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);
     color:#fff;border-radius:11px;padding:11px 13px;font-size:14px;font-family:inherit;outline:none;
-    transition:border-color .15s;margin:0 0 14px;
+    transition:border-color .15s;margin-bottom:10px;
   }
-  .kw-input::placeholder{color:rgba(255,255,255,.4)}
-  .kw-input:focus{border-color:var(--accent)}
-  .places-status{font-size:13px;color:rgba(255,255,255,.55);margin:2px 4px 10px}
-  .places-list{display:grid;gap:8px}
-  .place-card{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:11px 13px}
-  .pdot{width:10px;height:10px;border-radius:99px;margin-top:4px;flex:0 0 auto}
-  .pbody{flex:1;min-width:0}
-  .pname{font-weight:700;font-size:14px;color:#fff}
-  .pmeta{font-size:11.5px;color:rgba(255,255,255,.5);margin-top:2px}
+  .qinput::placeholder{color:rgba(255,255,255,.4)}
+  .qinput:focus{border-color:var(--accent)}
+  .qdone{
+    border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.8);
+    border-radius:99px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;
+  }
+  .qdone:hover{border-color:var(--accent);color:var(--accent)}
+  .qdone.done{background:#22c55e;border-color:#22c55e;color:#0a2818}
+  .advmonth{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px;font-weight:700}
+  .advrow{display:flex;gap:8px;flex-wrap:wrap}
+  .findnearby{
+    border:1px dashed rgba(255,255,255,.3);background:transparent;color:#fff;
+    border-radius:99px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;
+  }
+  .findnearby:hover{border-color:var(--accent);color:var(--accent)}
 
-  /* ---------- Modal ---------- */
-  .backdrop{
-    position:fixed;inset:0;background:rgba(10,12,24,.55);backdrop-filter:blur(3px);
-    display:flex;align-items:flex-end;justify-content:center;z-index:50;
-    opacity:0;pointer-events:none;transition:opacity .2s;padding:0;
+  /* ---------- Things-to-do link card ---------- */
+  .placeslink{
+    display:flex;align-items:center;gap:12px;text-decoration:none;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:15px;
+    padding:16px 18px;margin:0 4px 18px;
   }
-  .backdrop.open{opacity:1;pointer-events:auto}
-  .modal{
-    background:#fff;width:100%;max-width:460px;border-radius:20px 20px 0 0;
-    padding:20px 20px 26px;transform:translateY(20px);transition:transform .24s cubic-bezier(.2,.8,.2,1);
-    max-height:88vh;overflow-y:auto;
-  }
-  .backdrop.open .modal{transform:translateY(0)}
-  @media(min-width:640px){
-    .backdrop{align-items:center}
-    .modal{border-radius:20px;transform:translateY(12px) scale(.98)}
-    .backdrop.open .modal{transform:none}
-  }
-  .m-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
-  .m-date{font-family:var(--display);font-weight:800;font-size:21px;color:var(--ink);letter-spacing:-.01em}
-  .m-sub{font-size:12px;color:var(--ink-soft);margin-bottom:16px;text-transform:uppercase;letter-spacing:.08em}
-  .x{border:none;background:#f1f1ee;width:32px;height:32px;border-radius:9px;cursor:pointer;font-size:16px;color:#555}
-  .x:hover{background:#e7e7e2}
-
-  .field{margin-top:6px}
-  .field input[type=text]{
-    width:100%;border:1px solid var(--hair);border-radius:11px;padding:12px 13px;font-size:14px;
-    font-family:inherit;color:var(--ink);outline:none;transition:border-color .15s;
-  }
-  .field input[type=text]:focus{border-color:var(--accent)}
-  .picker{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-  .swatch{width:30px;height:30px;border-radius:9px;cursor:pointer;border:2px solid transparent;position:relative}
-  .swatch.sel{border-color:var(--ink)}
-  .swatch.sel::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:14px;font-weight:700}
-  .add-btn{
-    width:100%;background:var(--ink);color:#fff;border:none;border-radius:12px;
-    padding:13px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.01em;
-  }
-  .add-btn:hover{background:#0f1228}
-  .add-btn:disabled{opacity:.4;cursor:not-allowed}
+  .placeslink .pl-body{flex:1;min-width:0}
+  .placeslink .pl-title{font-weight:700;font-size:15px;color:#fff}
+  .placeslink .pl-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+  .placeslink .pl-arrow{font-size:20px;color:var(--accent);flex:0 0 auto}
+  .placeslink:hover{background:rgba(255,255,255,.08)}
 
   .hint{font-size:12px;color:var(--ink-soft);margin-top:14px;line-height:1.5}
-  label.lbl-s{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
 
   @media (prefers-reduced-motion: reduce){
     *{transition:none !important}
   }
   @media(max-width:520px){
     .wrap{padding:18px 10px 70px}
-    .city-form{flex-direction:column}
   }
 </style>
 </head>
@@ -202,83 +131,28 @@
     </div>
   </header>
 
-  <section class="rhythms" id="rhythms"></section>
+  <div class="qnav">
+    <button id="prevQ" aria-label="Previous quarter">‹</button>
+    <div class="qlabel"><span class="qname" id="qName">Q1</span><span class="qrange" id="qRange">Jan – Mar 2026</span></div>
+    <button id="nextQ" aria-label="Next quarter">›</button>
+    <button class="qtoday" id="qToday">Today</button>
+  </div>
 
-  <section class="places" id="placesSection">
-    <div class="phead">
-      <span class="t">Things to do</span>
-      <span class="sub">Find activities near a city, powered by OpenTripMap</span>
-      <button class="edit-cats" id="openApiKey">API key</button>
+  <section class="qsection" id="habitSection"></section>
+  <section class="qsection" id="adventureSection"></section>
+  <section class="qsection" id="misogiSection"></section>
+
+  <a class="placeslink" href="places.html">
+    <div class="pl-body">
+      <div class="pl-title">Things to do nearby</div>
+      <div class="pl-sub">Search activities near a city, powered by OpenTripMap</div>
     </div>
-    <form class="city-form" id="cityForm">
-      <input type="text" id="cityInput" placeholder="e.g. Lisbon, Tokyo, your hometown…" maxlength="60" />
-      <button type="submit" class="city-btn">Search</button>
-    </form>
-    <div class="legend" id="kindsLegend"></div>
-    <input type="text" id="keywordInput" class="kw-input" placeholder="Filter by keyword…" maxlength="40" />
-    <div class="places-status" id="placesStatus"></div>
-    <div class="places-list" id="placesList"></div>
-  </section>
+    <span class="pl-arrow">→</span>
+  </a>
 
   <p class="hint" style="color:rgba(255,255,255,.4);text-align:center;margin-top:18px">
-    Your rhythms and city save automatically · Your API key stays only in this browser
+    Everything saves automatically
   </p>
-</div>
-
-<!-- Rhythm modal -->
-<div class="backdrop" id="rhythmBackdrop">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rhythmTitle">
-    <div class="m-head">
-      <div class="m-date" id="rhythmTitle">Add a rhythm</div>
-      <button class="x" id="closeRhythm" aria-label="Close">✕</button>
-    </div>
-    <div class="m-sub">A goal on a repeating beat across the year</div>
-
-    <div class="presets" id="presetList"></div>
-
-    <div class="or-line">or build your own</div>
-
-    <div class="field">
-      <label class="lbl-s">Name</label>
-      <input type="text" id="rhythmInput" placeholder="e.g. Travel, Try something new…" maxlength="40" />
-    </div>
-    <div class="picker" id="rhythmCatPicker"></div>
-    <div class="row2" style="margin-bottom:14px">
-      <div class="fcol">
-        <label class="lbl-s">How often</label>
-        <select class="sel" id="rhythmEvery" style="margin-top:6px">
-          <option value="1">Every month</option>
-          <option value="2" selected>Every 2 months</option>
-          <option value="3">Every 3 months</option>
-          <option value="4">Every 4 months</option>
-          <option value="6">Twice a year</option>
-          <option value="12">Once this year</option>
-        </select>
-      </div>
-      <div class="fcol">
-        <label class="lbl-s">Starting</label>
-        <select class="sel" id="rhythmStart" style="margin-top:6px"></select>
-      </div>
-    </div>
-    <button class="add-btn" id="addRhythm" disabled>Add rhythm</button>
-  </div>
-</div>
-
-<!-- API key modal -->
-<div class="backdrop" id="apiKeyBackdrop">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="apiKeyTitle">
-    <div class="m-head">
-      <div class="m-date" id="apiKeyTitle">Connect OpenTripMap</div>
-      <button class="x" id="closeApiKey" aria-label="Close">✕</button>
-    </div>
-    <div class="m-sub">Needed to search for things to do</div>
-    <p class="hint" style="margin-top:0">Get a free key at opentripmap.io, then paste it below. It's stored only in this browser and is sent directly to OpenTripMap when you search.</p>
-    <div class="field">
-      <label class="lbl-s">API key</label>
-      <input type="text" id="apiKeyInput" placeholder="Paste your OpenTripMap API key" maxlength="120" />
-    </div>
-    <button class="add-btn" id="saveApiKey" disabled style="margin-top:14px">Save key</button>
-  </div>
 </div>
 
 <script>
@@ -299,335 +173,138 @@
     try{ if(hasStore){ await window.storage.set(key, JSON.stringify(val), false); } }catch(e){}
   }
 
-  // ---------- State ----------
+  // ---------- Constants ----------
   var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  var MONTHS_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   var CAT_VARS = ["--c0","--c1","--c2","--c3","--c4","--c5"];
+  var QUARTER_MONTHS = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]];
+  var ADV_MONTHS = [1,3,5,7,9,11]; // 6 mini adventures, every other month
 
-  var KINDS = [
-    {id:"interesting_places", name:"Sights",      c:0},
-    {id:"museums",            name:"Museums",     c:1},
-    {id:"architecture",       name:"Architecture",c:2},
-    {id:"foods",              name:"Food & drink",c:3},
-    {id:"natural",            name:"Nature",      c:4},
-    {id:"amusements",         name:"Entertainment",c:5}
-  ];
+  function currentQuarter(){ return Math.ceil((new Date().getMonth()+1)/3); }
 
   var state = {
     year: new Date().getFullYear(),
-    rhythms: [],       // {id,text,cat,every,start,done:[months]}
-    rhythmColor: 2,
-    apiKey: "",
-    city: "",
-    places: [],
-    placesStatus: "idle",   // idle | loading | error | ok
-    placesError: "",
-    placeFilter: null,      // selected kind id or null
-    placeQuery: ""
+    viewQuarter: currentQuarter(),
+    adventures: [],    // 6x {month, text, done}
+    habits: [],        // 4x {quarter, text, done}
+    misogi: {text:"", done:false}
   };
 
   function catColor(i){ return getComputedStyle(document.documentElement).getPropertyValue(CAT_VARS[i]).trim(); }
-  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 
   // ---------- Init ----------
   async function init(){
-    state.apiKey = await load("bigyear:apikey", "");
-    state.city = await load("bigyear:places:city", "");
     await loadYear();
-    buildPickers();
     renderAll();
     wire();
-    if(state.city){
-      document.getElementById("cityInput").value = state.city;
-      if(state.apiKey){ runCitySearch(); }
-    }
   }
   async function loadYear(){
-    state.rhythms = await load("bigyear:rhythms:"+state.year, []);
+    state.adventures = await load("bigyear:adventures:"+state.year, ADV_MONTHS.map(function(m){ return {month:m, text:"", done:false}; }));
+    state.habits = await load("bigyear:habits:"+state.year, [1,2,3,4].map(function(q){ return {quarter:q, text:"", done:false}; }));
+    state.misogi = await load("bigyear:misogi:"+state.year, {text:"", done:false});
   }
-  async function persistRhythms(){ await save("bigyear:rhythms:"+state.year, state.rhythms); }
-
-  // months (1-12) a rhythm lands on
-  function occMonths(r){
-    var out=[], m=r.start;
-    if(r.every>=12){ return [r.start]; }
-    while(m<=12){ out.push(m); m+=r.every; }
-    return out;
-  }
-  function cadenceLabel(every){
-    return ({1:"Every month",2:"Every 2 months",3:"Every 3 months",4:"Every 4 months",6:"Twice a year",12:"Once this year"})[every]||("Every "+every+" months");
-  }
+  function persistAdventures(){ save("bigyear:adventures:"+state.year, state.adventures); }
+  function persistHabits(){ save("bigyear:habits:"+state.year, state.habits); }
+  function persistMisogi(){ save("bigyear:misogi:"+state.year, state.misogi); }
 
   // ---------- Render: everything ----------
   function renderAll(){
     document.getElementById("titleYear").textContent = state.year;
-    renderRhythms();
-    renderKindsLegend();
-    renderPlaces();
+    renderDash();
   }
 
-  var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  function renderDash(){
+    var q = state.viewQuarter;
+    document.getElementById("qName").textContent = "Q"+q;
+    var qm = QUARTER_MONTHS[q-1];
+    document.getElementById("qRange").textContent = MONTHS[qm[0]-1]+" – "+MONTHS[qm[2]-1]+" "+state.year;
 
-  function renderRhythms(){
-    var el = document.getElementById("rhythms");
-    var html = '<div class="head"><span class="t">Your year’s rhythms</span>'+
-      '<span class="sub">repeating goals across the months</span>'+
-      '<button class="add-rhythm" id="openRhythm">+ Add rhythm</button></div>';
-
-    if(state.rhythms.length===0){
-      html += '<div class="rempty">Plan the beat of your year — e.g. travel every 4 months, try something new every other month, or one tough challenge. Tap <b>+ Add rhythm</b> to start.</div>';
-    }
-
-    state.rhythms.forEach(function(r){
-      var months = occMonths(r);
-      var done = r.done||[];
-      var col = catColor(r.cat);
-      var strip = '';
-      for(var m=1;m<=12;m++){
-        var on = months.indexOf(m)>=0;
-        var isDone = on && done.indexOf(m)>=0;
-        strip += '<div class="rmonth'+(on?" on":"")+(isDone?" done":"")+'"'+(on?' data-r="'+r.id+'" data-m="'+m+'"':'')+' style="--rc:'+col+'">'+
-          '<span class="ml">'+MONTHS[m-1].charAt(0)+'</span>'+
-          '<div class="mb" style="background:'+(on?col:"")+'">'+(on?CHECK:'')+'</div></div>';
-      }
-      html += '<div class="rcard">'+
-        '<div class="rtop"><span class="rdot" style="background:'+col+'"></span>'+
-          '<span class="rname">'+esc(r.text)+'</span>'+
-          '<span class="rcad">'+cadenceLabel(r.every)+'</span>'+
-          '<button class="rdel" data-rdel="'+r.id+'" aria-label="Delete">✕</button></div>'+
-        '<div class="rstrip">'+strip+'</div>'+
-        '<div class="rprog"><b>'+done.length+'</b> of '+months.length+' done this year</div>'+
+    var habit = state.habits[q-1];
+    document.getElementById("habitSection").innerHTML =
+      '<div class="qcard">'+
+        '<div class="qhead"><span class="qdot" style="background:'+catColor(1)+'"></span><span class="qtitle">This quarter\'s habit</span></div>'+
+        '<div class="sub">One new habit to build this quarter</div>'+
+        '<input type="text" class="qinput" id="habitInput" maxlength="60" placeholder="What habit are you building?" value="'+esc(habit.text)+'" />'+
+        '<button class="qdone'+(habit.done?" done":"")+'" id="habitDone">'+(habit.done?"✓ Done":"Mark as done")+'</button>'+
       '</div>';
-    });
 
-    el.innerHTML = html;
-    document.getElementById("openRhythm").addEventListener("click", openRhythmModal);
-    el.querySelectorAll("[data-m]").forEach(function(b){
-      b.addEventListener("click",function(){ toggleOcc(b.getAttribute("data-r"), parseInt(b.getAttribute("data-m"),10)); });
-    });
-    el.querySelectorAll("[data-rdel]").forEach(function(b){
-      b.addEventListener("click",function(){ delRhythm(b.getAttribute("data-rdel")); });
-    });
-  }
+    var due = state.adventures.filter(function(a){ return qm.indexOf(a.month)>=0; });
+    document.getElementById("adventureSection").innerHTML =
+      '<div class="qhead" style="margin:0 4px 4px"><span class="qdot" style="background:'+catColor(5)+'"></span><span class="qtitle">Mini adventures this quarter</span></div>'+
+      due.map(function(a){
+        return '<div class="qcard">'+
+          '<div class="advmonth">'+MONTHS[a.month-1]+'</div>'+
+          '<input type="text" class="qinput" data-adv="'+a.month+'" maxlength="60" placeholder="What’s the adventure?" value="'+esc(a.text)+'" />'+
+          '<div class="advrow">'+
+            '<button class="qdone'+(a.done?" done":"")+'" data-adv-done="'+a.month+'">'+(a.done?"✓ Done":"Mark as done")+'</button>'+
+            '<button class="findnearby" data-find="'+a.month+'">Find nearby activities</button>'+
+          '</div>'+
+        '</div>';
+      }).join("");
 
-  function toggleOcc(id, month){
-    state.rhythms.forEach(function(r){
-      if(r.id===id){
-        if(!r.done) r.done=[];
-        var i=r.done.indexOf(month);
-        if(i>=0) r.done.splice(i,1); else r.done.push(month);
-      }
-    });
-    persistRhythms(); renderRhythms();
-  }
-  function delRhythm(id){ state.rhythms=state.rhythms.filter(function(r){return r.id!==id;}); persistRhythms(); renderRhythms(); }
+    document.getElementById("misogiSection").innerHTML =
+      '<div class="qcard">'+
+        '<div class="qhead"><span class="qdot" style="background:'+catColor(4)+'"></span><span class="qtitle">This year’s misogi</span></div>'+
+        '<div class="sub">One hard, defining challenge — no fixed date, just get it done</div>'+
+        '<input type="text" class="qinput" id="misogiInput" maxlength="60" placeholder="Name your misogi…" value="'+esc(state.misogi.text)+'" />'+
+        '<button class="qdone'+(state.misogi.done?" done":"")+'" id="misogiDone">'+(state.misogi.done?"✓ Done":"Mark as done")+'</button>'+
+      '</div>';
 
-  // ---------- Pickers ----------
-  function buildPickers(){
-    var rp = document.getElementById("rhythmCatPicker");
-    var h = CAT_VARS.map(function(_,i){ return '<button class="swatch" data-c="'+i+'" style="background:'+catColor(i)+'"></button>'; }).join("");
-    rp.innerHTML = h;
-    rp.querySelectorAll(".swatch").forEach(function(s){
-      s.addEventListener("click",function(){ state.rhythmColor=parseInt(s.getAttribute("data-c"),10); markPicker(rp,state.rhythmColor); });
-    });
-    markPicker(rp,state.rhythmColor);
-  }
-  function markPicker(p,sel){
-    p.querySelectorAll(".swatch").forEach(function(s){
-      s.classList.toggle("sel", parseInt(s.getAttribute("data-c"),10)===sel);
-    });
+    wireDash();
   }
 
-  // ---------- Rhythm modal ----------
-  var PRESETS = [
-    {text:"Travel",            cat:2, every:4,  start:1},
-    {text:"Try something new", cat:5, every:2,  start:2},
-    {text:"One tough challenge",cat:4,every:12, start:6}
-  ];
-  function fillMonthSelect(){
-    var sel=document.getElementById("rhythmStart");
-    var h=""; for(var m=1;m<=12;m++){ h+='<option value="'+m+'">'+MONTHS_LONG[m-1]+'</option>'; }
-    sel.innerHTML=h; sel.value="1";
-  }
-  function renderPresets(){
-    var el=document.getElementById("presetList");
-    el.innerHTML = PRESETS.map(function(p,i){
-      return '<button class="preset" data-preset="'+i+'">'+
-        '<span class="pd" style="background:'+catColor(p.cat)+'"></span>'+
-        '<span class="pt">'+esc(p.text)+'</span>'+
-        '<span class="pc">'+cadenceLabel(p.every)+'</span></button>';
-    }).join("");
-    el.querySelectorAll("[data-preset]").forEach(function(b){
-      b.addEventListener("click",function(){ addRhythmFrom(PRESETS[parseInt(b.getAttribute("data-preset"),10)]); });
+  function wireDash(){
+    var hi = document.getElementById("habitInput");
+    hi.addEventListener("change", function(){ state.habits[state.viewQuarter-1].text = hi.value.trim(); persistHabits(); });
+    document.getElementById("habitDone").addEventListener("click", function(){
+      var h = state.habits[state.viewQuarter-1]; h.done = !h.done; persistHabits(); renderDash();
     });
-  }
-  function openRhythmModal(){
-    renderPresets();
-    fillMonthSelect();
-    document.getElementById("rhythmInput").value="";
-    document.getElementById("rhythmEvery").value="2";
-    state.rhythmColor=2; markPicker(document.getElementById("rhythmCatPicker"),2);
-    document.getElementById("addRhythm").disabled=true;
-    open("rhythmBackdrop");
-  }
-  function addRhythmFrom(p){
-    state.rhythms.push({id:uid(),text:p.text,cat:p.cat,every:p.every,start:p.start,done:[]});
-    persistRhythms(); renderRhythms(); close("rhythmBackdrop");
-  }
-  function addRhythm(){
-    var t=document.getElementById("rhythmInput").value.trim(); if(!t) return;
-    var every=parseInt(document.getElementById("rhythmEvery").value,10);
-    var start=parseInt(document.getElementById("rhythmStart").value,10);
-    state.rhythms.push({id:uid(),text:t,cat:state.rhythmColor,every:every,start:start,done:[]});
-    persistRhythms(); renderRhythms(); close("rhythmBackdrop");
-  }
 
-  // ---------- Things to do ----------
-  function renderKindsLegend(){
-    var lg = document.getElementById("kindsLegend");
-    var html = '<span class="lbl">Categories</span>';
-    KINDS.forEach(function(k){
-      var active = state.placeFilter===k.id;
-      html += '<button class="cat '+(active?"active":"")+'" data-kind="'+k.id+'">'+
-        '<span class="sw" style="background:'+catColor(k.c)+'"></span>'+esc(k.name)+'</button>';
-    });
-    lg.className = "legend"+(state.placeFilter!==null?" filtered":"");
-    lg.innerHTML = html;
-    lg.querySelectorAll("[data-kind]").forEach(function(b){
-      b.addEventListener("click",function(){
-        var id=b.getAttribute("data-kind");
-        state.placeFilter = (state.placeFilter===id ? null : id);
-        renderKindsLegend(); renderPlaces();
+    document.querySelectorAll("[data-adv]").forEach(function(inp){
+      inp.addEventListener("change", function(){
+        var m = parseInt(inp.getAttribute("data-adv"),10);
+        state.adventures.forEach(function(a){ if(a.month===m) a.text = inp.value.trim(); });
+        persistAdventures();
       });
     });
+    document.querySelectorAll("[data-adv-done]").forEach(function(b){
+      b.addEventListener("click", function(){
+        var m = parseInt(b.getAttribute("data-adv-done"),10);
+        state.adventures.forEach(function(a){ if(a.month===m) a.done = !a.done; });
+        persistAdventures(); renderDash();
+      });
+    });
+    document.querySelectorAll("[data-find]").forEach(function(b){
+      b.addEventListener("click", function(){ window.location.href = "places.html"; });
+    });
+
+    var mi = document.getElementById("misogiInput");
+    mi.addEventListener("change", function(){ state.misogi.text = mi.value.trim(); persistMisogi(); });
+    document.getElementById("misogiDone").addEventListener("click", function(){
+      state.misogi.done = !state.misogi.done; persistMisogi(); renderDash();
+    });
   }
 
-  function placeMatchesFilter(p){
-    if(!state.placeFilter) return true;
-    return (p.kinds||"").split(",").indexOf(state.placeFilter)>=0;
+  async function shiftQuarter(delta){
+    var q = state.viewQuarter + delta;
+    if(q<1){ q=4; state.year--; await loadYear(); }
+    else if(q>4){ q=1; state.year++; await loadYear(); }
+    state.viewQuarter = q;
+    document.getElementById("titleYear").textContent = state.year;
+    renderDash();
   }
-  function placeMatchesQuery(p){
-    if(!state.placeQuery) return true;
-    return (p.name||"").toLowerCase().indexOf(state.placeQuery.toLowerCase())>=0;
+  async function jumpToCurrentQuarter(){
+    state.year = new Date().getFullYear();
+    state.viewQuarter = currentQuarter();
+    await loadYear();
+    document.getElementById("titleYear").textContent = state.year;
+    renderDash();
   }
-
-  function renderPlaces(){
-    var statusEl = document.getElementById("placesStatus");
-    var el = document.getElementById("placesList");
-
-    if(!state.apiKey){
-      statusEl.textContent = "Add an API key to search for things to do.";
-      el.innerHTML = ""; return;
-    }
-    if(state.placesStatus==="loading"){ statusEl.textContent="Searching…"; el.innerHTML=""; return; }
-    if(state.placesStatus==="error"){ statusEl.textContent=state.placesError||"Something went wrong."; el.innerHTML=""; return; }
-    if(!state.city){ statusEl.textContent="Enter a city to see things to do nearby."; el.innerHTML=""; return; }
-
-    var filtered = state.places.filter(function(p){ return placeMatchesFilter(p) && placeMatchesQuery(p); });
-    if(!filtered.length){ statusEl.textContent="No matches. Try a different category or keyword."; el.innerHTML=""; return; }
-
-    statusEl.textContent = filtered.length+" places near "+state.city;
-    el.innerHTML = filtered.map(function(p){
-      var kindId = (p.kinds||"").split(",")[0];
-      var kindInfo = KINDS.filter(function(k){ return k.id===kindId; })[0];
-      var col = kindInfo ? catColor(kindInfo.c) : catColor(0);
-      var dist = (typeof p.dist==="number") ? Math.round(p.dist)+" m away" : "";
-      return '<div class="place-card">'+
-        '<span class="pdot" style="background:'+col+'"></span>'+
-        '<div class="pbody"><div class="pname">'+esc(p.name||"Unnamed place")+'</div>'+
-        '<div class="pmeta">'+(kindInfo?esc(kindInfo.name):esc(kindId||""))+(dist?" · "+dist:"")+'</div></div>'+
-      '</div>';
-    }).join("");
-  }
-
-  async function geocodeCity(name){
-    var url = "https://api.opentripmap.com/0.1/en/places/geoname?name="+encodeURIComponent(name)+"&apikey="+encodeURIComponent(state.apiKey);
-    var res = await fetch(url);
-    if(!res.ok) throw new Error("Could not look up that city.");
-    var data = await res.json();
-    if(!data || typeof data.lat!=="number" || typeof data.lon!=="number") throw new Error("City not found.");
-    return data;
-  }
-  async function searchPlaces(lat, lon){
-    var url = "https://api.opentripmap.com/0.1/en/places/radius?radius=10000&lon="+lon+"&lat="+lat+"&limit=50&format=json&apikey="+encodeURIComponent(state.apiKey);
-    var res = await fetch(url);
-    if(!res.ok) throw new Error("Could not load things to do.");
-    var data = await res.json();
-    return Array.isArray(data) ? data : [];
-  }
-  async function runCitySearch(){
-    var name = document.getElementById("cityInput").value.trim();
-    if(!name) return;
-    if(!state.apiKey){ openApiKeyModal(); return; }
-
-    state.city = name;
-    save("bigyear:places:city", name);
-    state.placesStatus = "loading"; state.placesError=""; renderPlaces();
-    try{
-      var geo = await geocodeCity(name);
-      var pois = await searchPlaces(geo.lat, geo.lon);
-      state.places = pois;
-      state.placesStatus = "ok";
-    }catch(err){
-      state.placesStatus = "error";
-      state.placesError = (err && err.message) || "Something went wrong.";
-      state.places = [];
-    }
-    renderPlaces();
-  }
-
-  function openApiKeyModal(){
-    document.getElementById("apiKeyInput").value = state.apiKey||"";
-    document.getElementById("saveApiKey").disabled = true;
-    open("apiKeyBackdrop");
-  }
-  async function saveApiKeyFromInput(){
-    var v = document.getElementById("apiKeyInput").value.trim();
-    if(!v) return;
-    state.apiKey = v;
-    await save("bigyear:apikey", v);
-    close("apiKeyBackdrop");
-    if(document.getElementById("cityInput").value.trim()){
-      runCitySearch();
-    } else {
-      renderPlaces();
-    }
-  }
-
-  // ---------- Modal helpers ----------
-  function open(id){ document.getElementById(id).classList.add("open"); }
-  function close(id){ document.getElementById(id).classList.remove("open"); }
-  function closeAll(){ ["rhythmBackdrop","apiKeyBackdrop"].forEach(close); }
 
   // ---------- Wire ----------
   function wire(){
-    var ri=document.getElementById("rhythmInput");
-    ri.addEventListener("input",function(){ document.getElementById("addRhythm").disabled = ri.value.trim()===""; });
-    ri.addEventListener("keydown",function(e){ if(e.key==="Enter" && ri.value.trim()){ addRhythm(); } });
-    document.getElementById("addRhythm").addEventListener("click", addRhythm);
-    document.getElementById("closeRhythm").addEventListener("click",function(){ close("rhythmBackdrop"); });
-
-    document.getElementById("cityForm").addEventListener("submit", function(e){ e.preventDefault(); runCitySearch(); });
-
-    var kwInp = document.getElementById("keywordInput");
-    var kwTimer;
-    kwInp.addEventListener("input", function(){
-      state.placeQuery = kwInp.value;
-      clearTimeout(kwTimer);
-      kwTimer = setTimeout(renderPlaces, 150);
-    });
-
-    document.getElementById("openApiKey").addEventListener("click", openApiKeyModal);
-    var akInp = document.getElementById("apiKeyInput");
-    akInp.addEventListener("input", function(){ document.getElementById("saveApiKey").disabled = akInp.value.trim()===""; });
-    akInp.addEventListener("keydown", function(e){ if(e.key==="Enter" && akInp.value.trim()){ saveApiKeyFromInput(); } });
-    document.getElementById("saveApiKey").addEventListener("click", saveApiKeyFromInput);
-    document.getElementById("closeApiKey").addEventListener("click", function(){ close("apiKeyBackdrop"); });
-
-    ["rhythmBackdrop","apiKeyBackdrop"].forEach(function(id){
-      document.getElementById(id).addEventListener("click",function(e){ if(e.target.id===id) close(id); });
-    });
-    document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeAll(); });
+    document.getElementById("prevQ").addEventListener("click", function(){ shiftQuarter(-1); });
+    document.getElementById("nextQ").addEventListener("click", function(){ shiftQuarter(1); });
+    document.getElementById("qToday").addEventListener("click", jumpToCurrentQuarter);
   }
 
   function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
