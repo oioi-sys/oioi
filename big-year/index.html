@@ -302,6 +302,7 @@
   <section class="rhythms" id="rhythms"></section>
 
   <div class="legend" id="legend"></div>
+  <button class="add-rhythm" id="openQuickEntry" style="margin:0 4px 16px">+ Add entry by category</button>
 
   <div class="sheet">
     <div class="scroller">
@@ -409,6 +410,29 @@
   </div>
 </div>
 
+<!-- Quick entry modal: category first, then date -->
+<div class="backdrop" id="quickBackdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="quickTitle">
+    <div class="m-head">
+      <div class="m-date" id="quickTitle">Add to your calendar</div>
+      <button class="x" id="closeQuick" aria-label="Close">✕</button>
+    </div>
+    <div class="m-sub">Pick a category, then a date</div>
+    <label class="lbl-s">Category</label>
+    <div class="picker" id="quickCatPicker"></div>
+    <div class="field" style="margin-bottom:14px">
+      <label class="lbl-s">Date</label>
+      <input type="date" id="quickDate" style="width:100%;border:1px solid var(--hair);border-radius:11px;padding:11px 13px;font-size:14px;font-family:inherit;margin-top:6px" />
+    </div>
+    <div class="field">
+      <label class="lbl-s">Note or event</label>
+      <input type="text" id="quickInput" placeholder="e.g. Marathon, Dentist 9am, Launch day…" maxlength="80" />
+    </div>
+    <label class="ms-toggle"><input type="checkbox" id="quickMsCheck" /> Mark as a milestone ★</label>
+    <button class="add-btn" id="addQuick" disabled>Add to calendar</button>
+  </div>
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -448,7 +472,9 @@
     selMs: false,
     goalColor: 4,
     rhythms: [],       // {id,text,cat,every,start,done:[months]}
-    rhythmColor: 2
+    rhythmColor: 2,
+    quickColor: 4,
+    quickMs: false
   };
 
   function catColor(i){ return getComputedStyle(document.documentElement).getPropertyValue(CAT_VARS[i]).trim(); }
@@ -698,6 +724,14 @@
       });
       markPicker(rp,state.rhythmColor);
     }
+    var qp = document.getElementById("quickCatPicker");
+    if(qp){
+      qp.innerHTML=h;
+      qp.querySelectorAll(".swatch").forEach(function(s){
+        s.addEventListener("click",function(){ state.quickColor=parseInt(s.getAttribute("data-c"),10); markPicker(qp,state.quickColor); });
+      });
+      markPicker(qp,state.quickColor);
+    }
     p.querySelectorAll(".swatch").forEach(function(s){
       s.addEventListener("click",function(){ state.selColor=parseInt(s.getAttribute("data-c"),10); markPicker(p,state.selColor); });
     });
@@ -793,6 +827,29 @@
     if(inModal) renderGoalList();
   }
 
+  // ---------- Quick entry (category first, then date) ----------
+  function openQuickModal(){
+    var dateInp = document.getElementById("quickDate");
+    var now = new Date();
+    dateInp.value = (now.getFullYear()===state.year) ? todayKey() : key(state.year,0,1);
+    document.getElementById("quickInput").value="";
+    document.getElementById("quickMsCheck").checked=false;
+    state.quickMs=false;
+    document.getElementById("addQuick").disabled=true;
+    open("quickBackdrop");
+  }
+  async function addQuickEntry(){
+    var t = document.getElementById("quickInput").value.trim(); if(!t) return;
+    var dateStr = document.getElementById("quickDate").value; if(!dateStr) return;
+    var y = parseInt(dateStr.split("-")[0],10);
+    if(y!==state.year){ state.year=y; await loadYear(); }
+    if(!state.days[dateStr]) state.days[dateStr]=[];
+    state.days[dateStr].push({id:uid(),text:t,cat:state.quickColor,ms:state.quickMs});
+    await persistDays();
+    close("quickBackdrop");
+    renderAll();
+  }
+
   // ---------- Categories ----------
   function openCatModal(){
     var el = document.getElementById("catEditList");
@@ -857,7 +914,7 @@
   // ---------- Modal helpers ----------
   function open(id){ document.getElementById(id).classList.add("open"); }
   function close(id){ document.getElementById(id).classList.remove("open"); }
-  function closeAll(){ ["dayBackdrop","goalBackdrop","catBackdrop","rhythmBackdrop"].forEach(close); }
+  function closeAll(){ ["dayBackdrop","goalBackdrop","catBackdrop","rhythmBackdrop","quickBackdrop"].forEach(close); }
 
   // ---------- Wire ----------
   function wire(){
@@ -892,7 +949,17 @@
     document.getElementById("addRhythm").addEventListener("click", addRhythm);
     document.getElementById("closeRhythm").addEventListener("click",function(){ close("rhythmBackdrop"); });
 
-    ["dayBackdrop","goalBackdrop","catBackdrop","rhythmBackdrop"].forEach(function(id){
+    document.getElementById("openQuickEntry").addEventListener("click", openQuickModal);
+    var qi=document.getElementById("quickInput"), qd=document.getElementById("quickDate");
+    function syncQuickBtn(){ document.getElementById("addQuick").disabled = (qi.value.trim()==="" || qd.value===""); }
+    qi.addEventListener("input", syncQuickBtn);
+    qd.addEventListener("input", syncQuickBtn);
+    qi.addEventListener("keydown",function(e){ if(e.key==="Enter" && qi.value.trim() && qd.value){ addQuickEntry(); } });
+    document.getElementById("quickMsCheck").addEventListener("change",function(e){ state.quickMs=e.target.checked; });
+    document.getElementById("addQuick").addEventListener("click", addQuickEntry);
+    document.getElementById("closeQuick").addEventListener("click",function(){ close("quickBackdrop"); });
+
+    ["dayBackdrop","goalBackdrop","catBackdrop","rhythmBackdrop","quickBackdrop"].forEach(function(id){
       document.getElementById(id).addEventListener("click",function(e){ if(e.target.id===id) close(id); });
     });
     document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeAll(); });
