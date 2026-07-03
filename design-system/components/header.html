@@ -1,0 +1,45 @@
+<!-- @dsCard group="Layout" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Header</title>
+<style>
+  :root {
+    --bg: #0f1117; --bg2: #161b27; --bg3: #1e2535; --border: #2a3248;
+    --text: #e2e8f0; --text2: #8b9cbf; --green: #22c55e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px; background: var(--bg2); border-bottom: 1px solid var(--border);
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .logo { font-size: 18px; font-weight: 700; letter-spacing: 0.05em; color: var(--text); }
+  .exchange-badge {
+    font-size: 12px; color: var(--text2); background: var(--bg3);
+    padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border);
+  }
+  .header-right { display: flex; align-items: center; gap: 14px; }
+  .market-badge {
+    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px;
+    border: 1px solid currentColor; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--green);
+  }
+  .clock { font-size: 13px; color: var(--text2); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <span class="logo">DOF GROUP ASA</span>
+      <span class="exchange-badge">Oslo Stock Exchange &bull; DOF.OL</span>
+    </div>
+    <div class="header-right">
+      <span class="market-badge">Regular</span>
+      <span class="clock">14:32:01</span>
+    </div>
+  </header>
+</body>
+</html>

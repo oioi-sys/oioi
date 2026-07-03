@@ -1,0 +1,42 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>52-week range bar</title>
+<style>
+  :root {
+    --bg: #0f1117; --bg2: #161b27; --bg3: #1e2535; --border: #2a3248;
+    --text: #e2e8f0; --text2: #8b9cbf; --green: #22c55e; --red: #ef4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); padding: 32px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
+  .week52-section { max-width: 420px; }
+  .week52-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .week52-bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .week52-lo, .week52-hi { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .week52-bar { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; position: relative; border: 1px solid var(--border); }
+  .week52-fill { height: 100%; width: 62%; background: linear-gradient(90deg, var(--red), var(--green)); border-radius: 3px; }
+  .week52-thumb {
+    position: absolute; top: 50%; left: 62%; transform: translate(-50%, -50%);
+    width: 12px; height: 12px; background: var(--text); border-radius: 50%;
+    border: 2px solid var(--bg2); box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  }
+</style>
+</head>
+<body>
+  <h1>52-week range</h1>
+  <div class="week52-section">
+    <div class="week52-label">52-Week Range</div>
+    <div class="week52-bar-wrap">
+      <span class="week52-lo">98.40</span>
+      <div class="week52-bar"><div class="week52-fill"></div><div class="week52-thumb"></div></div>
+      <span class="week52-hi">162.00</span>
+    </div>
+  </div>
+</body>
+</html>

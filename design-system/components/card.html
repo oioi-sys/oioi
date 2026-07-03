@@ -1,0 +1,34 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Card</title>
+<style>
+  :root {
+    --bg: #0f1117; --bg2: #161b27; --border: #2a3248;
+    --text: #e2e8f0; --text2: #8b9cbf;
+    --radius: 12px; --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); padding: 32px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
+  .card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow); max-width: 360px;
+  }
+  .card-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
+  .card-body { font-size: 13px; color: var(--text2); line-height: 1.6; }
+</style>
+</head>
+<body>
+  <h1>Base card</h1>
+  <div class="card">
+    <div class="card-title">Card title</div>
+    <div class="card-body">All surfaces (price, chart, info, news) share this container: bg2 fill, 1px border, 12px radius, soft shadow.</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Price hero</title>
+<style>
+  :root {
+    --bg: #0f1117; --bg2: #161b27; --bg3: #1e2535; --border: #2a3248;
+    --text: #e2e8f0; --text2: #8b9cbf; --green: #22c55e; --red: #ef4444;
+    --radius: 12px; --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); padding: 32px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
+  .card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow); max-width: 460px;
+  }
+  .price-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .price-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .price-value { display: flex; align-items: baseline; gap: 8px; }
+  .price { font-size: 42px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+  .currency { font-size: 18px; color: var(--text2); font-weight: 500; }
+  .change-row { display: flex; align-items: center; gap: 5px; margin-top: 6px; font-size: 16px; font-weight: 600; }
+  .change-row.positive { color: var(--green); }
+  .change-row.negative { color: var(--red); }
+  .change-pct { font-size: 14px; }
+  .price-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .live-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+    70%  { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+    100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+  }
+  .meta-updated { font-size: 11px; color: var(--text2); }
+  .price-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat-box { background: var(--bg3); border-radius: 8px; padding: 10px 12px; border: 1px solid var(--border); }
+  .stat-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .stat-value { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+  <h1>Price hero</h1>
+  <div class="card">
+    <div class="price-top">
+      <div>
+        <div class="price-label">Current Price</div>
+        <div class="price-value"><span class="price">146.80</span><span class="currency">NOK</span></div>
+        <div class="change-row positive">&#9650; <span>1.60</span><span class="change-pct">(1.10%)</span></div>
+      </div>
+      <div class="price-meta">
+        <div class="live-dot" title="Live"></div>
+        <div class="meta-updated">Updated 14:32:01</div>
+      </div>
+    </div>
+    <div class="price-stats">
+      <div class="stat-box"><div class="stat-label">Prev Close</div><div class="stat-value">145.20</div></div>
+      <div class="stat-box"><div class="stat-label">Day High</div><div class="stat-value">148.10</div></div>
+      <div class="stat-box"><div class="stat-label">Day Low</div><div class="stat-value">144.60</div></div>
+      <div class="stat-box"><div class="stat-label">Volume</div><div class="stat-value">1.24M</div></div>
+    </div>
+  </div>
+</body>
+</html>

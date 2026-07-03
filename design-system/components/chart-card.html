@@ -1,0 +1,55 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Chart card</title>
+<style>
+  :root {
+    --bg: #0f1117; --bg2: #161b27; --bg3: #1e2535; --border: #2a3248;
+    --text: #e2e8f0; --text2: #8b9cbf; --accent: #3b82f6; --green: #22c55e;
+    --radius: 12px; --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); padding: 32px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
+  .card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow); max-width: 520px;
+  }
+  .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .chart-title { font-size: 15px; font-weight: 600; }
+  .period-selector { display: flex; gap: 4px; }
+  .period-btn {
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text2);
+    padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  }
+  .period-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .chart-wrap {
+    height: 200px; border-radius: 8px; border: 1px solid var(--border);
+    background:
+      linear-gradient(rgba(34,197,94,0.18), rgba(34,197,94,0));
+    display: flex; align-items: flex-end; padding: 8px;
+  }
+  .chart-line { width: 100%; height: 2px; background: var(--green); position: relative; top: -60px; }
+</style>
+</head>
+<body>
+  <h1>Chart card</h1>
+  <div class="card">
+    <div class="chart-header">
+      <span class="chart-title">Price Chart</span>
+      <div class="period-selector">
+        <button class="period-btn active">1D</button>
+        <button class="period-btn">5D</button>
+        <button class="period-btn">1M</button>
+        <button class="period-btn">3M</button>
+      </div>
+    </div>
+    <div class="chart-wrap"><div class="chart-line"></div></div>
+  </div>
+</body>
+</html>

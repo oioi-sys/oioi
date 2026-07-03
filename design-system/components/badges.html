@@ -1,0 +1,55 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Badges</title>
+<style>
+  :root {
+    --bg: #0f1117; --bg2: #161b27; --bg3: #1e2535; --border: #2a3248;
+    --text: #e2e8f0; --text2: #8b9cbf; --green: #22c55e; --yellow: #eab308;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); padding: 32px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
+  .row { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+  .exchange-badge {
+    font-size: 12px; color: var(--text2); background: var(--bg3);
+    padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border);
+  }
+  .market-badge {
+    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px;
+    border: 1px solid currentColor; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .market-badge.open { color: var(--green); }
+  .market-badge.pre, .market-badge.post { color: var(--yellow); }
+  .market-badge.closed { color: var(--text2); }
+  .live-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--text2); }
+  .live-dot.pulsing { background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+    70%  { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+    100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+  }
+</style>
+</head>
+<body>
+  <h1>Badges</h1>
+  <div class="row">
+    <span class="exchange-badge">Oslo Stock Exchange &bull; DOF.OL</span>
+  </div>
+  <div class="row">
+    <span class="market-badge open">Regular</span>
+    <span class="market-badge pre">Pre</span>
+    <span class="market-badge post">Post</span>
+    <span class="market-badge closed">Closed</span>
+  </div>
+  <div class="row">
+    <div class="live-dot pulsing"></div>
+    <div class="live-dot"></div>
+  </div>
+</body>
+</html>
